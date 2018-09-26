@@ -4,6 +4,9 @@ from .views import (
     LoginAPIView, RegistrationAPIView, UserRetrieveUpdateAPIView
 )
 
+# Specify a namespace
+app_name="authentication"
+
 urlpatterns = [
     url(r'^user/?$', UserRetrieveUpdateAPIView.as_view()),
     url(r'^users/?$', RegistrationAPIView.as_view()),
