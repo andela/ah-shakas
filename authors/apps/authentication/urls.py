@@ -3,7 +3,6 @@ from django.conf.urls import url
 from .views import (
     LoginAPIView, RegistrationAPIView, UserRetrieveUpdateAPIView
 )
-app_name = "authentication"
 
 urlpatterns = [
     url(r'^user/?$', UserRetrieveUpdateAPIView.as_view()),
