@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'authors.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.getenv('DB_NAME'),
         'PASSWORD':os.getenv('DB_PASSWORD'),
         'HOST':os.getenv('DB_HOST'),
@@ -145,15 +145,13 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+        'authors.apps.authentication.backends.JWTAuthentication',
     ),
 }
 
 
 # Activate django-heroku for Heroku
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
 
 # Parse Database environmental variables
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
