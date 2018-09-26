@@ -15,7 +15,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         regex="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
         max_length=128,
         min_length=8,
-        write_only=True
+        write_only=True,
+        error_messages={
+            'invalid': 'Password must have a number and a letter'}
     )
 
     # Ensure the username is at least 4 characters long and  unique

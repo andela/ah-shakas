@@ -17,13 +17,6 @@ class UserJSONRenderer(JSONRenderer):
             # As mentioned about, we will let the default JSONRenderer handle
             # rendering errors.
 
-
-            # Customize password error message to be meaningful
-            if errors.get('password'):
-                errors['password'] = [
-                    'Password must be at least 8 characters and must include at least a number.'
-                ]
-
             return super(UserJSONRenderer, self).render(data)
 
 
