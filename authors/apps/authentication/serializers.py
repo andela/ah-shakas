@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from rest_framework.validators import UniqueValidator
 
 from rest_framework import serializers
 
@@ -16,14 +17,23 @@ class RegistrationSerializer(serializers.ModelSerializer):
         write_only=True
     )
 
+    # Ensure the username is at least 4 characters long and  unique
+    username = serializers.CharField(
+        min_length=4,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+
     # The client should not be able to send a token along with a registration
     # request. Making `token` read-only handles that for us.
+    token = serializers.CharField(
+        read_only=True
+    )
 
     class Meta:
         model = User
         # List all of the fields that could possibly be included in a request
         # or response, including fields specified explicitly above.
-        fields = ['email', 'username', 'password']
+        fields = ['email', 'username', 'password', 'token']
 
     def create(self, validated_data):
         # Use the `create_user` method we wrote earlier to create a new user.
