@@ -1,6 +1,6 @@
 # Status
 
-[![Coverage Status](https://coveralls.io/repos/github/andela/ah-shakas/badge.svg?branch=develop)](https://coveralls.io/github/andela/ah-shakas?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/andela/ah-shakas/badge.svg?branch=develop)](https://coveralls.io/github/andela/ah-shakas?branch=master)
 
 
 Authors Haven - A Social platform for the creative at heart.
