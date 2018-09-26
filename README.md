@@ -71,7 +71,7 @@ $ python manage.py migrate
 ```
 python manage.py runserver
 ```
-
+---
 ## API Spec
 The preferred JSON object to be returned by the API should be structured as follows:
 
