@@ -4,6 +4,9 @@ from .views import (
     LoginAPIView, RegistrationAPIView, UserRetrieveUpdateAPIView
 )
 
+# Specify a namespace
+app_name="authentication"
+
 urlpatterns = [
     path('user/', UserRetrieveUpdateAPIView.as_view()),
     path('users/', RegistrationAPIView.as_view()),
