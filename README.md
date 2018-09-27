@@ -50,6 +50,8 @@ export DB_USER=username you use to access the database
 export DB_PASSWORD=your password
 export DB_HOST=host url of your database e.g localhost
 ```
+Note: There is no space next to '='
+
 on terminal,
 ```
 $ source .env
@@ -62,6 +64,7 @@ $ set DB_USER=username you use to access the database
 $ set DB_PASSWORD=your password
 $ set DB_HOST=host url of your database e.g localhost
 ```
+Note: There is no space next to '='
 - make migrations
 ```
 $ python manage.py makemigrations
