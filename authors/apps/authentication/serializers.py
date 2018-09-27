@@ -9,6 +9,14 @@ from .models import User
 class RegistrationSerializer(serializers.ModelSerializer):
     """Serializers registration requests and creates a new user."""
 
+    # Customize email is required error messages
+    email = serializers.EmailField(
+        required=True,
+        error_messages={ 
+            'required': 'Email is required',
+        }
+    )
+
     # Ensure passwords are at least 8 characters long, no longer than 128
     # characters, and can not be read by the client.
     password = serializers.RegexField(
@@ -16,14 +24,22 @@ class RegistrationSerializer(serializers.ModelSerializer):
         max_length=128,
         min_length=8,
         write_only=True,
+        required=True,
         error_messages={
-            'invalid': 'Password must have a number and a letter'}
+            'required': 'Password is required',
+            'invalid': 'Password must have a number and a letter',
+            'min_length': 'Password must have at least 8 characters',
+            'max_length': 'Password cannot be more than 128 characters'}
     )
 
     # Ensure the username is at least 4 characters long and  unique
     username = serializers.CharField(
         min_length=4,
-        validators=[UniqueValidator(queryset=User.objects.all())]
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())],
+        error_messages={
+            'required': 'Username is required',
+            'min_length': 'Username must have at least 4 characters'}
     )
 
     # The client should not be able to send a token along with a registration
