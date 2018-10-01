@@ -49,11 +49,8 @@ INSTALLED_APPS = [
 
 
 
-    'social_django',
-
     'rest_framework_swagger',
-
-
+    'social_django',
 
 ]
 
