@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'authors.apps.profiles',
 
 
+
     'social_django',
 
     'rest_framework_swagger',
