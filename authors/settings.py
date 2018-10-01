@@ -45,9 +45,10 @@ INSTALLED_APPS = [
     'authors.apps.authentication',
     'authors.apps.core',
     'authors.apps.profiles',
-    'rest_framework_swagger',
 
+    'rest_framework_swagger',
     'social_django',
+
 ]
 
 MIDDLEWARE = [
