@@ -104,6 +104,3 @@ db.sqlite3
 
 # vim python config
 .ycm_extra_conf.py
-
-# migrations folder
-migrations/
