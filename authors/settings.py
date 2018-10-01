@@ -206,8 +206,5 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'MY69flrLPH5fzUCJY2rGbzus'
 
 
 # Activate django-heroku for Heroku
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
 
-# Parse Database environmental variables
-
-# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
