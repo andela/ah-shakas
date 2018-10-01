@@ -152,3 +152,17 @@ REST_FRAMEWORK = {
 
 # Activate django-heroku for Heroku
 django_heroku.settings(locals())
+<<<<<<< HEAD
+=======
+
+# Parse Database environmental variables
+
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
+
+#send grid credentials
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'shakas'
+EMAIL_HOST_PASSWORD = 'Shakas123'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+>>>>>>> [FEATURE #160577477] add sendgrid credentials
