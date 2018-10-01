@@ -119,7 +119,7 @@ class SocialSignUp(CreateAPIView):
             user = backend.do_auth(token, user=authed_user)
         except AuthAlreadyAssociated:
             # if the user already exists,throw the following error
-            return Response({"error": "The email is areasy registered, please try another one"},
+            return Response({"error": "The email is already registered, please try another one"},
                             status=status.HTTP_400_BAD_REQUEST)
 
         if user and user.is_active:
@@ -139,6 +139,6 @@ class SocialSignUp(CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED, 
                             headers=headers)
         else:
-            return Response({"error": "Something went wron with the authentication, please try again"},
+            return Response({"error": "Something went wrong with the authentication, please try again"},
                             status=status.HTTP_400_BAD_REQUEST)
 
