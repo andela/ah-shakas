@@ -139,10 +139,5 @@ class SocialSignUp(CreateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED, 
                             headers=headers)
         else:
-<<<<<<< HEAD
             return Response({"error": "Something went wrong with the authentication, please try again"},
-=======
-            return Response({"errors": "Error with social authe//ntication"},
->>>>>>> feat(Social-Auth): Implement Social SignIn and SignUp
-                            status=status.HTTP_400_BAD_REQUEST)
 
