@@ -45,12 +45,9 @@ INSTALLED_APPS = [
     'authors.apps.authentication',
     'authors.apps.core',
     'authors.apps.profiles',
-<<<<<<< HEAD
     'rest_framework_swagger',
-=======
 
     'social_django',
->>>>>>> feat(Social-Auth): Implement Social SignIn and SignUp
 ]
 
 MIDDLEWARE = [
@@ -92,17 +89,12 @@ WSGI_APPLICATION = 'authors.wsgi.application'
 
 DATABASES = {
     'default': {
-<<<<<<< HEAD
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('DB_NAME'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
         'USER': os.getenv('DB_USER'),
         'PORT': '5432',
-=======
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
->>>>>>> feat(Social-Auth): Implement Social SignIn and SignUp
     }
 }
 
