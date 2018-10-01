@@ -47,7 +47,11 @@ INSTALLED_APPS = [
     'authors.apps.profiles',
     'rest_framework_swagger',
 
+
     'social_django',
+
+    'rest_framework_swagger',
+
 ]
 
 MIDDLEWARE = [
