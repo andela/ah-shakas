@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate
 from rest_framework.validators import UniqueValidator
-
 from rest_framework import serializers
 
 from .models import User
