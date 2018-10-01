@@ -48,7 +48,6 @@ INSTALLED_APPS = [
 
     'rest_framework_swagger',
     'social_django',
-
 ]
 
 MIDDLEWARE = [
