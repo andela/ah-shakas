@@ -8,9 +8,15 @@ from .models import User
 class RegistrationSerializer(serializers.ModelSerializer):
     """Serializers registration requests and creates a new user."""
 
-    # Customize email is required error messages
+    # Ensure email is provided and is unique
     email = serializers.EmailField(
         required=True,
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='This email is already used by another user',
+            )
+        ],
         error_messages={ 
             'required': 'Email is required',
         }
@@ -33,9 +39,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
     )
 
     # Ensure the username is at least 4 characters long, unique and
-    # does not have a space in between.
+    # does not have a space in between. Must also contain only letters
+    # with underscores and hyphens allowed
     username = serializers.RegexField(
-        regex='^(?!.*\ )$',
+        regex='^(?!.*\ )[A-Za-z\d\-\_]+$',
         min_length=4,
         required=True,
         validators=[
@@ -53,9 +60,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     # The client should not be able to send a token along with a registration
     # request. Making `token` read-only handles that for us.
-    token = serializers.CharField(
-        read_only=True
-    )
+    token = serializers.CharField(read_only=True)
 
     class Meta:
         model = User
@@ -72,7 +77,6 @@ class LoginSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=255)
     username = serializers.CharField(max_length=255, read_only=True)
     password = serializers.CharField(max_length=128, write_only=True)
-
 
     def validate(self, data):
         # The `validate` method is where we make sure that the current

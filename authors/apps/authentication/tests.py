@@ -18,7 +18,7 @@ class AuthenticationTest(APITestCase):
         self.url = api_reverse('authentication:user-registration')
         self.user =  { 
             'user' : { 
-                'username': 'Jane Doe', 
+                'username': 'janeDoe', 
                 'email': 'jane@doe.com', 
                 'password': 'janedoe123', 
             }
@@ -87,6 +87,15 @@ class AuthenticationTest(APITestCase):
         response = self.client.post(self.url, self.user, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(b'Username is required', response.content)
+
+    def test_user_cannot_signup_without_username(self):
+        """
+        User cannot login with username with a space
+        """
+        self.user['user']['username'] = 'username with space'
+        response = self.client.post(self.url, self.user, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(b'Username cannot have a space', response.content)
 
     def test_user_cannot_signup_with_short_username(self):
         """
