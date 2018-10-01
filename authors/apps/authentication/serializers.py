@@ -29,17 +29,27 @@ class RegistrationSerializer(serializers.ModelSerializer):
             'required': 'Password is required',
             'invalid': 'Password must have a number and a letter',
             'min_length': 'Password must have at least 8 characters',
-            'max_length': 'Password cannot be more than 128 characters'}
+            'max_length': 'Password cannot be more than 128 characters'
+        }
     )
 
-    # Ensure the username is at least 4 characters long and  unique
-    username = serializers.CharField(
+    # Ensure the username is at least 4 characters long, unique and
+    # does not have a space in between.
+    username = serializers.RegexField(
+        regex='^(?!.*\ )$',
         min_length=4,
         required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())],
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='Username must be unique',
+            )
+        ],
         error_messages={
+            'invalid': 'Username cannot have a space',
             'required': 'Username is required',
-            'min_length': 'Username must have at least 4 characters'}
+            'min_length': 'Username must have at least 4 characters'
+        }
     )
 
     # The client should not be able to send a token along with a registration
