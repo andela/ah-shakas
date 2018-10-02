@@ -1,9 +1,8 @@
 from django.contrib.auth import authenticate
 from rest_framework.validators import UniqueValidator
+from django.contrib.auth.tokens import default_token_generator, PasswordResetTokenGenerator
 from rest_framework import serializers
-
 from .models import User
-
 
 class RegistrationSerializer(serializers.ModelSerializer):
     """Serializers registration requests and creates a new user."""
@@ -186,3 +185,20 @@ class UserSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+class EmailSerializer(serializers.Serializer):
+    """
+    serializes email
+    """
+    email = serializers.EmailField(max_length=255)
+
+class PasswordResetSerializer(serializers.ModelSerializer):
+    """
+    serializes password and email
+    """
+    email = serializers.EmailField(max_length=255)
+    password = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = User
+        fields = ('email', 'password')
