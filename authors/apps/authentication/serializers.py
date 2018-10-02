@@ -210,6 +210,7 @@ class PasswordResetSerializer(serializers.ModelSerializer):
             'max_length': 'Password cannot be more than 128 characters'
         }
     )
+
     class Meta:
         model = User
         fields = ('email', 'password')
