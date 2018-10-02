@@ -5,6 +5,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
 from .models import User
+from rest_framework.views import APIView
+from django.core.mail import send_mail
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.hashers import *
+from .models import User
+>>>>>>> [Feature #160577477]users can receive links via  emails to reset password
 from .renderers import UserJSONRenderer
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .serializers import (
@@ -15,7 +21,7 @@ import os
 from django.template.loader import render_to_string
 
 
-class RegistrationAPIView(APIView):
+class RegistrationAPIView(CreateAPIView):
     # Allow any user (authenticated or not) to hit this endpoint.
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
@@ -141,6 +147,10 @@ class PasswordResetAPIView(generics.CreateAPIView):
             message = {"message":"The Email provided is not registered"}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
         token = token_data['token']
+        password = request.data.get('password', {})
+        email = request.data.get('email', {})
+        user = User.objects.filter(email=email).first()
+        token = request.GET.get("token", "")
         token_generator = PasswordResetTokenGenerator()
         checked_token = token_generator.check_token(user, token)
         if not checked_token:
