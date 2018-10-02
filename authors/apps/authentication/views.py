@@ -2,15 +2,20 @@ from rest_framework import status, generics
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-
-
-
+from rest_framework.views import APIView
+from django.core.mail import send_mail
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.hashers import *
+from .models import User
 from .renderers import UserJSONRenderer
 from .serializers import (
-    LoginSerializer, RegistrationSerializer, UserSerializer
+    LoginSerializer, RegistrationSerializer, UserSerializer, EmailSerializer, PasswordResetSerializer
 )
 
-class RegistrationAPIView(CreateAPIView):
+from django.template.loader import render_to_string
+
+
+class RegistrationAPIView(APIView):
     # Allow any user (authenticated or not) to hit this endpoint.
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
@@ -73,3 +78,52 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class EmailSentAPIView(APIView):
+    permission_classes = (AllowAny,)
+    renderer_classes = (UserJSONRenderer,)
+    serializer_class = EmailSerializer
+
+    def post(self, request):
+        email = request.data.get('email', {})
+        user = User.objects.filter(email=email).first()
+        if user is None:
+            message = {"message":"The Email provided is not registered"}
+            return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
+        serializer = self.serializer_class(data={"email":email})
+        serializer.is_valid(raise_exception=True)
+        token_generator = PasswordResetTokenGenerator()
+        token = token_generator.make_token(user)
+        message = {"message":"We've sent a password reset link to your email"}
+        subject = "Password reset"
+        body = render_to_string('password_reset.html', {
+            'link': 'https://google.com?token=' + token,
+            'name': user.username,
+        })
+
+
+        send_mail(subject, "Password Reset", "noreply@Authors-Haven.com", [email], html_message=body)
+        return Response(message, status=status.HTTP_200_OK)
+
+class PasswordResetAPIView(APIView):
+    permission_classes = (AllowAny,)
+    renderer_classes = (UserJSONRenderer,)
+    serializer_class = PasswordResetSerializer
+
+    def put(self, request):
+        password = request.data.get('password', {})
+        email = request.data.get('email', {})
+        user = User.objects.filter(email=email).first()
+        token = request.GET.get("token", "")
+        token_generator = PasswordResetTokenGenerator()
+        checked_token = token_generator.check_token(user, token)
+        if not checked_token:
+           return Response({"message":"invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+        user.set_password(password)
+        user.save()
+        data={
+            "email":email,
+            "password":password
+            }
+        serializer = self.serializer_class(user, data=data)
+        serializer.is_valid(raise_exception=True)
+        return Response({"message":"password successfully changed"}, status=status.HTTP_202_ACCEPTED)
