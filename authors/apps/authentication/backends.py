@@ -42,3 +42,6 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
         return (user, token)
 
+class JWTAuthentication:
+    def authenticate(self, data):
+        pass
