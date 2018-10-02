@@ -1,6 +1,12 @@
 from rest_framework import status
 from rest_framework.views import APIView
+from django.http import Http404
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+
+from .renderers import ProfileJSONRenderer
+from .serializers import ProfileSerializer
+from .models import Profile
 
 # Create your views here.
 

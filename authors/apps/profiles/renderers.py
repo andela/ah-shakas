@@ -22,3 +22,4 @@ class ProfileJSONRenderer(JSONRenderer):
         return json.dumps({
             'profile': data
         })
+        
