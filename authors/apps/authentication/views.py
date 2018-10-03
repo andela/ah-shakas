@@ -95,7 +95,22 @@ class EmailSentAPIView(generics.CreateAPIView):
         token gets generated and sent to users via link.
         """
         email = request.data.get('email', {})
+<<<<<<< HEAD
         serializer = self.serializer_class(data={'email':email})
+=======
+        try:
+            if request.data['email'].strip() == "":
+                message = {"message":"email field cannot be empty"}
+                return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
+        except KeyError:
+            message = {"message":"email field should be provided"}
+            return  Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
+        user = User.objects.filter(email=email).first()
+        if user is None:
+            message = {"message":"The Email provided is not registered"}
+            return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
+        serializer = self.serializer_class(data={"email":email})
+>>>>>>> [Feature #160577477]catch errors where email is not registered
         serializer.is_valid(raise_exception=True)
         try:
             user = User.objects.get(email=email)
