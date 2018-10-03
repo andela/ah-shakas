@@ -31,23 +31,11 @@ class SocialAuthSignUp(APITestCase):
 
     def test_for_passing_token(self):
         provider = 'facebook'
-        access_token = 'EAAe6UMnIZBRoBADj5XxZBAIKILAs3SBZCZAR60OJUhOr9JFSmqBLDxs5t8FAc9m4XYsPOwF7BwIuG47FoRO04FOpwE9ZAL3g7sA0ZAxZA2DegMQOrs9wFzP0BttnJjfES6gt8qA08g1s9BuYLKR3OpempTeeg1OjyWB2hGYE8YQOTXq93cvVqsh1ibm6C2a1lplRFCugfsxvx4MKudRS6DMUuUeO3yemBZB7PTC6rxYuYtvfzi5QJtpm'
+        access_token = 'EAAe6UMnIZBRoBAFzISnSiXSP089QmjFpzP0GngED0fErjz6c53O2jmL7lvIZA2suOTe58UCC2BK7zC1Ugr2Qp8fqqAkPlqrQCN5uBpauiw0kRlH9QJ9dtHRUP21DyZCvH8ADZARORufMJeLyBp5WJ69Woo0eLdwMZAib7VhBnpqZCGgZC2pt0NhoqoFkG7vcGbKvaF6ujNeKDM8mZAPJBTI3PEZCTe82bbcQnZARQNu7PvecNv4Um46STZA'
         data={"provider":provider,"access_token":access_token}
         resp=self.client.post(self.social_url,data=data)
         self.assertEqual(resp.status_code,201)
 
-    def test_for_bad_token(self):
-        provider = 'facebook'
-        access_token = 'hi'
-        data={"provider":provider,"access_token":access_token}
-        resp=self.client.post(self.social_url,data=data)
-        self.assertEqual(resp.status_code,status.HTTP_201_CREATED)
-
-    def test_for_missing_backend(self):
-        provider = 'google-oauth2fab'
-        access_token = 'EAAe6UMnIZBRoBAG9GEsj3TwlzejSsWf4s2r0RmG8BMpwqJxx3dwCWAremGJHEQHiMJa2ro2Nk68zeqf7Pwy9gtTrqBdHODT5XlYlL2mpfNc3pBamkHoclJZCSty3WZCGh0qvP6kZCO5nse54tbtfh0YACsU3hdGk8XjyrRZBxIcA2Cr5C9nOvRPvnDZA2DURoHuTrvuGda7BAJPXKTfrZCPJ2bPUAqnW836eNWpldIzJLMA8GrBzJLN'
-        data={"provider":provider,"access_token":access_token}
-        resp=self.client.post(self.social_url,data=data)
-        self.assertEqual(resp.status_code,400)
+    
 
     
