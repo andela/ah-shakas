@@ -1,8 +1,9 @@
 from rest_framework import serializers
 from .models import ArticlesModel
 
+
 class ArticlesSerializers(serializers.ModelSerializer):
-    # author = serializers.CharField(source='author.username')
+
     title = serializers.CharField(
         required=True,
         max_length=128,
@@ -24,12 +25,14 @@ class ArticlesSerializers(serializers.ModelSerializer):
             'required': 'Body is required'
         }
     )
+
     class Meta:
         model = ArticlesModel
-        fields = ('title', 'description', 'body', 'slug', 'author', 'createdAt', 'updatedAt')
-
-    # def create(self, validated_data):
-    #     # author = self.context.get('author', None)
-    #     return ArticlesModel.objects.create(**validated_data)
-
-
+        fields = (
+            'title',
+            'description',
+            'body',
+            'slug',
+            'author',
+            'createdAt',
+            'updatedAt')
