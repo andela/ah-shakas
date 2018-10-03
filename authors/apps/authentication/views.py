@@ -95,6 +95,13 @@ class EmailSentAPIView(APIView):
 
     def post(self, request):
         email = request.data.get('email', {})
+        try:
+            if request.data['email'].strip() == "":
+                message = {"message":"email field cannot be empty"}
+                return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
+        except KeyError:
+            message = {"message":"email field should be provided"}
+            return  Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)       
         user = User.objects.filter(email=email).first()
         if user is None:
             message = {"message":"The Email provided is not registered"}
