@@ -45,12 +45,12 @@ INSTALLED_APPS = [
     'authors.apps.authentication',
     'authors.apps.core',
     'authors.apps.profiles',
-<<<<<<< HEAD
-    'rest_framework_swagger',
-=======
+
 
     'social_django',
->>>>>>> feat(Social-Auth): Implement Social SignIn and SignUp
+    'rest_framework_swagger',
+
+
 ]
 
 MIDDLEWARE = [
@@ -153,6 +153,49 @@ REST_FRAMEWORK = {
         'authors.apps.authentication.backends.JWTAuthentication',
     ),
 }
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.open_id.OpenIdAuth',
+    'social_core.backends.google.GoogleOpenId',
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.google.GoogleOAuth',
+    'social_core.backends.twitter.TwitterOAuth',
+    #'social_core.backends.yahoo.YahooOpenId',
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+
+    
+    'django.contrib.auth.backends.ModelBackend',
+)
+#SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+)
+SOCIAL_AUTH_FACEBOOK_KEY = '2175180982515994'
+SOCIAL_AUTH_FACEBOOK_SECRET = '4a8f6c5eb2aed7056edfe7d4323f28bf'
+
+SOCIAL_AUTH_TWITTER_KEY = 'Z99QEtxVAZNYu5qcPRiRlqxBj'
+SOCIAL_AUTH_TWITTER_SECRET = 'lhaAA8wWcWpCmhtEPpGlWJgNyP9r2fRAsVNxFsFSa35VNQl2Fx'
+
+SOCIAL_AUTH_FACEBOOK_SCOPE =['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS={'fields':'id,email,name'}
+
+
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '6613413486293-mkb39ej2rlv4b7m0t6o1pian5dr8nffd.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'MY69flrLPH5fzUCJY2rGbzus'
+
+
+
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.open_id.OpenIdAuth',
