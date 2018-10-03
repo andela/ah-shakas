@@ -4,7 +4,6 @@ from authors.apps.authentication.serializers import UserSerializer
 from authors.apps.articles.helpers import get_time_to_read_article
 
 
-
 class ArticlesSerializers(serializers.ModelSerializer):
 
     title = serializers.CharField(
