@@ -6,6 +6,9 @@ from .views import (
 # Specify a namespace
 app_name="authentication"
 
+# Specify a namespace
+app_name="authentication"
+
 urlpatterns = [
     path('user/', UserRetrieveUpdateAPIView.as_view()),
     path('users/', RegistrationAPIView.as_view(), name='user-registration'),

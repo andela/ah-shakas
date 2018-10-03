@@ -1,11 +1,12 @@
-from rest_framework import status
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework import status, generics
+from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .models import User
+
 from .renderers import UserJSONRenderer
 from .serializers import (
     LoginSerializer, RegistrationSerializer, UserSerializer, EmailSerializer, PasswordResetSerializer
@@ -14,7 +15,7 @@ from .serializers import (
 from django.template.loader import render_to_string
 
 
-class RegistrationAPIView(APIView):
+class RegistrationAPIView(CreateAPIView):
     # Allow any user (authenticated or not) to hit this endpoint.
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
@@ -33,7 +34,7 @@ class RegistrationAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class LoginAPIView(APIView):
+class LoginAPIView(CreateAPIView):
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
     serializer_class = LoginSerializer

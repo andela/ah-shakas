@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'authors.apps.authentication',
     'authors.apps.core',
     'authors.apps.profiles',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [
@@ -85,10 +86,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('DB_NAME'),
-        'PASSWORD':os.getenv('DB_PASSWORD'),
-        'HOST':os.getenv('DB_HOST'),
-        'USER':os.getenv('DB_USER'),
-        'PORT':'5432',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'USER': os.getenv('DB_USER'),
+        'PORT': '5432',
     }
 }
 
@@ -145,19 +146,12 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-         'rest_framework.authentication.SessionAuthentication',
-         'rest_framework.authentication.BasicAuthentication',   
+        'authors.apps.authentication.backends.JWTAuthentication',
     ),
 }
 
-
 # Activate django-heroku for Heroku
 django_heroku.settings(locals())
-
-# Parse Database environmental variables
-
-#DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 #send grid credentials
 EMAIL_HOST = os.getenv('EMAIL_HOST')
@@ -165,3 +159,4 @@ EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
