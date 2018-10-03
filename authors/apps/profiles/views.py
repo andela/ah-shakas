@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.views import APIView
 from django.http import Http404
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from .renderers import ProfileJSONRenderer
@@ -12,7 +12,7 @@ from .models import Profile
 
 class ProfileAPIView(APIView):
     #Allow any user to hit this endpoint
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticatedOrReadOnly)
     renderer_classes = (ProfileJSONRenderer,)
 
     def get(self, request, username, format=None):
