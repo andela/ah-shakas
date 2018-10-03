@@ -120,7 +120,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def token(self):
         """
-        This method generates and decodes jwt token.
+        This method generates and returns a string of the token generated.
         """
         date = datetime.now() + timedelta(hours=24)
 
