@@ -196,13 +196,10 @@ class PasswordResetSerializer(serializers.ModelSerializer):
     """
     serializes password and email
     """
-<<<<<<< HEAD
+
     email = serializers.EmailField(max_length=255, required=True)
     password = serializers.CharField(min_length=8, max_length=255, required=True)
-=======
-    email = serializers.EmailField(max_length=255)
-    password = serializers.CharField(max_length=255)
->>>>>>> [Feature #160577477]users can receive links via  emails to reset password
+
 
     class Meta:
         model = User
