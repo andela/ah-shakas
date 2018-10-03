@@ -1,14 +1,9 @@
 from rest_framework import serializers
 from .models import ArticlesModel
 
-<<<<<<< HEAD
 
 class ArticlesSerializers(serializers.ModelSerializer):
 
-=======
-class ArticlesSerializers(serializers.ModelSerializer):
-    # author = serializers.CharField(source='author.username')
->>>>>>> [Feature #160577480] Initial Commit
     title = serializers.CharField(
         required=True,
         max_length=128,
