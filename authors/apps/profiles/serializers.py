@@ -27,7 +27,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         }
     )
     bio = serializers.CharField(max_length=255, default='Update your bio')
-    image_url = serializers.CharField(max_length=255, default='image-link')
+    image_url = serializers.URLField(max_length=250, default='image-link')
     following = serializers.BooleanField(default=False)
 
 
