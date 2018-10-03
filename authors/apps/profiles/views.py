@@ -19,7 +19,7 @@ class ProfileAPIView(APIView):
         try:
             profile =  Profile.objects.get(user__username=username)
             serializer = ProfileSerializer(profile)
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         except Profile.DoesNotExist:
             return Response(
                 {
