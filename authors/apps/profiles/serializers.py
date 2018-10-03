@@ -1,4 +1,6 @@
 from rest_framework import serializers, status
+from rest_framework.validators import UniqueValidator
+
 from .models import Profile
 from authors.apps.authentication.models import User
 from rest_framework.response import Response
@@ -7,7 +9,23 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
     Serializer to map the UserProfile instance into JSON format
     """
-    username = serializers.CharField(max_length=255, source='user.username')
+    username = serializers.RegexField(
+        regex='^(?!.*\ )[A-Za-z\d\-\_]+$',
+        min_length=4,
+        required=True,
+        source='user.username',
+        validators=[
+            UniqueValidator(
+                queryset=User.objects.all(),
+                message='Username must be unique',
+            )
+        ],
+        error_messages={
+            'invalid': 'Username cannot have a space',
+            'required': 'Username is required',
+            'min_length': 'Username must have at least 4 characters'
+        }
+    )
     bio = serializers.CharField(max_length=255, default='Update your bio')
     image_url = serializers.CharField(max_length=255, default='image-link')
     following = serializers.BooleanField(default=False)
