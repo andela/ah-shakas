@@ -196,8 +196,8 @@ class PasswordResetSerializer(serializers.ModelSerializer):
     """
     serializes password and email
     """
-    email = serializers.EmailField(max_length=255)
-    password = serializers.CharField(max_length=255)
+    email = serializers.EmailField(max_length=255, required=True)
+    password = serializers.CharField(min_length=8, max_length=255, required=True)
 
     class Meta:
         model = User
