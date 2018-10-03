@@ -2,16 +2,14 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
+from .permissions import IsOwnerOrReadonly
 
 from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel
 from .serializers import ArticlesSerializers
 
 
-
 class ArticlesList(generics.ListCreateAPIView):
-    queryset = ArticlesModel.objects.all()
-    serializer_class = ArticlesSerializers
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def post(self, request):
