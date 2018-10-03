@@ -5,7 +5,6 @@ from .models import ArticlesModel
 from authors.apps.profiles.serializers import ProfileSerializer
 
 
-
 class ArticlesSerializers(serializers.ModelSerializer):
     title = serializers.CharField(
         required=True,
