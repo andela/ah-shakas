@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from authors.apps.authentication.serializers import UserSerializer
+from authors.apps.articles.helpers import get_time_to_read_article
 from authors.apps.profiles.models import Profile
 from authors.apps.profiles.serializers import ProfileSerializer
 from .models import ArticlesModel, Comment
