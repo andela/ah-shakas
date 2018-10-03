@@ -86,10 +86,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': os.getenv('DB_NAME'),
-        'PASSWORD':os.getenv('DB_PASSWORD'),
-        'HOST':os.getenv('DB_HOST'),
-        'USER':os.getenv('DB_USER'),
-        'PORT':'5432',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'USER': os.getenv('DB_USER'),
+        'PORT': '5432',
     }
 }
 
@@ -150,9 +150,5 @@ REST_FRAMEWORK = {
     ),
 }
 
-
 # Activate django-heroku for Heroku
 django_heroku.settings(locals())
-
-# Parse Database environmental variables
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
