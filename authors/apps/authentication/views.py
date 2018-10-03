@@ -5,7 +5,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.contrib.auth.hashers import *
 from .models import User
 from .renderers import UserJSONRenderer
 from .serializers import (
@@ -84,6 +83,10 @@ class EmailSentAPIView(APIView):
     serializer_class = EmailSerializer
 
     def post(self, request):
+        """
+        here, the user provides email to be used to get a link. The email must be registered,
+        token gets generated and sent to users via link.
+        """
         email = request.data.get('email', {})
         try:
             if request.data['email'].strip() == "":
@@ -106,9 +109,7 @@ class EmailSentAPIView(APIView):
             'link': 'https://google.com?token=' + token,
             'name': user.username,
         })
-
-
-        send_mail(subject, "Password Reset", "noreply@Authors-Haven.com", [email], html_message=body)
+        send_mail(subject, "Password Reset", "no-reply@Authors-Haven.com", [email], html_message=body)
         return Response(message, status=status.HTTP_200_OK)
 
 class PasswordResetAPIView(APIView):
@@ -117,9 +118,18 @@ class PasswordResetAPIView(APIView):
     serializer_class = PasswordResetSerializer
 
     def put(self, request):
+        """
+        Here, the user has received an email with a link to reset password.
+        The user provides a new password.
+        Token gets verified against the user.
+        Once all checks have passed, the new password gets saved.
+        """
         password = request.data.get('password', {})
         email = request.data.get('email', {})
         user = User.objects.filter(email=email).first()
+        if user is None:
+            message = {"message":"The Email provided is not registered"}
+            return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
         token = request.GET.get("token", "")
         token_generator = PasswordResetTokenGenerator()
         checked_token = token_generator.check_token(user, token)
