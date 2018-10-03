@@ -83,6 +83,10 @@ class EmailSentAPIView(APIView):
     serializer_class = EmailSerializer
 
     def post(self, request):
+        """
+        here, the user provides email to be used to get a link. The email must be registered,
+        token gets generated and sent to users via link.
+        """
         email = request.data.get('email', {})
         try:
             if request.data['email'].strip() == "":
@@ -90,7 +94,7 @@ class EmailSentAPIView(APIView):
                 return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
         except KeyError:
             message = {"message":"email field should be provided"}
-            return  Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)       
+            return  Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
         user = User.objects.filter(email=email).first()
         if user is None:
             message = {"message":"The Email provided is not registered"}
@@ -105,13 +109,8 @@ class EmailSentAPIView(APIView):
             'link': 'https://google.com?token=' + token,
             'name': user.username,
         })
-<<<<<<< HEAD
+
         send_mail(subject, "Password Reset", "no-reply@Authors-Haven.com", [email], html_message=body)
-=======
-
-
-        send_mail(subject, "Password Reset", "noreply@Authors-Haven.com", [email], html_message=body)
->>>>>>> [Feature #160577477]users can receive links via  emails to reset password
         return Response(message, status=status.HTTP_200_OK)
 
 class PasswordResetAPIView(APIView):
