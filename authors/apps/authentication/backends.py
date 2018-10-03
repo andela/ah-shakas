@@ -32,7 +32,7 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
         # Get the user owning the token
         try:
-            user = User.objects.get(email=payload['email'])
+            user = User.objects.get(username=payload['username'])
         except User.DoesNotExist:
             raise AuthenticationFailed('No user found for token provided')
 
