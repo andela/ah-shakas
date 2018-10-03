@@ -1,11 +1,17 @@
 from rest_framework import serializers
 from .models import ArticlesModel
+<<<<<<< HEAD
 from authors.apps.authentication.serializers import UserSerializer
 from authors.apps.articles.helpers import get_time_to_read_article
 
 
 class ArticlesSerializers(serializers.ModelSerializer):
 
+=======
+
+class ArticlesSerializers(serializers.ModelSerializer):
+    # author = serializers.CharField(source='author.username')
+>>>>>>> [Feature #160577480] Initial Commit
     title = serializers.CharField(
         required=True,
         max_length=128,
