@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework.validators import UniqueValidator
+from django.contrib.auth.tokens import default_token_generator, PasswordResetTokenGenerator
 from rest_framework import serializers
 from .models import User
 
