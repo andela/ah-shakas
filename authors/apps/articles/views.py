@@ -1,7 +1,7 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.status import HTTP_201_CREATED
 
 from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel, Comment
@@ -47,7 +47,7 @@ class ArticlesDetails(RetrieveUpdateDestroyAPIView):
         return Response({"message": "Article Deleted Successfully"})
 
 class CommentsListCreateView(ListCreateAPIView):
-    queryset = Comments.objects.all()
+    queryset = Comment.objects.all()
     serializer_class = CommentsSerializers
     permission_classes= (IsAuthenticatedOrReadOnly,)
 
@@ -60,6 +60,6 @@ class CommentsListCreateView(ListCreateAPIView):
         serializer = self.serializer_class(data=comment)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=HTTP_201_CREATED)
 
         
