@@ -93,7 +93,7 @@ class TestPasswordReset(APITestCase):
         """
         data = {
             "email":"koechkevin92@gmail.com",
-            "password":"Kev#12345"
+            "password":"Kev12345"
         }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
@@ -105,7 +105,7 @@ class TestPasswordReset(APITestCase):
         """
         data = {
             "email":"koechkevin92@gmail.com",
-            "password":"Kev#12345"
+            "password":"Kev12345"
         }
         data2 = {
             "email":"koechkevin92@gmail.com",
@@ -128,4 +128,4 @@ class TestPasswordReset(APITestCase):
             }
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.content, b'{"user": {"password": ["Ensure this field has at least 8 characters."]}}')
+        self.assertEqual(response.content, b'{"user": {"password": ["Password must have at least 8 characters", "Password must have a number and a letter"]}}')
