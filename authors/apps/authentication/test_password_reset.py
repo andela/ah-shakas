@@ -17,8 +17,8 @@ class TestEmailSent(APITestCase):
         self.register_url = api_reverse('authentication:user-registration')
         self.user =  {
             'user' : {
-                'username': 'kevin', 
-                'email': 'koechkevin92@gmail.com', 
+                'username': 'kevin',
+                'email': 'koechkevin92@gmail.com',
                 'password': 'Kev12345'
             }
         }
@@ -29,7 +29,7 @@ class TestEmailSent(APITestCase):
         case where unregistered user tries to request a password
         """
         response = self.client.post(self.url, data={"email":"koechkevin@gmail.com"})
-        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.content, b'{"user": {"message": "The Email provided is not registered"}}')
 
     def test_email_field_missing(self):
@@ -37,7 +37,7 @@ class TestEmailSent(APITestCase):
         case where a user provides no parameters on request body
         """
         response = self.client.post(self.url, data={})
-        self.assertEqual(response.status_code, status.HTTP_406_NOT_ACCEPTABLE)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.content, b'{"user": {"message": "email field should be provided"}}')
 
     def test_empty_email(self):
@@ -46,7 +46,7 @@ class TestEmailSent(APITestCase):
         """
         response = self.client.post(self.url, data={"email":""})
         self.assertEqual(response.content, b'{"user": {"message": "email field cannot be empty"}}')
-        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.status_code, 400)
 
     def test_successful_email(self):
         """
@@ -66,8 +66,8 @@ class TestPasswordReset(APITestCase):
         """
         self.user =  {
             'user' : {
-                'username': 'kevin', 
-                'email': 'koechkevin92@gmail.com', 
+                'username': 'kevin',
+                'email': 'koechkevin92@gmail.com',
                 'password': 'Kev12345'
             }
         }
@@ -96,7 +96,7 @@ class TestPasswordReset(APITestCase):
             "password":"Kev12345"
         }
         response = self.client.put(self.url, data=data)
-        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.content, b'{"user": {"message": "password successfully changed"}}')
 
     def test_used_token(self):
@@ -113,7 +113,7 @@ class TestPasswordReset(APITestCase):
         }
         response1 = self.client.put(self.url, data=data)
         response2 = self.client.put(self.url, data=data2)
-        self.assertEqual(response1.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(response1.status_code, status.HTTP_200_OK)
         self.assertEqual(response1.content, b'{"user": {"message": "password successfully changed"}}')
         self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response2.content, b'{"user": {"message": "invalid token"}}')

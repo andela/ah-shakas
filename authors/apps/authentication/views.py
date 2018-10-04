@@ -91,14 +91,14 @@ class EmailSentAPIView(generics.CreateAPIView):
         try:
             if request.data['email'].strip() == "":
                 message = {"message":"email field cannot be empty"}
-                return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
         except KeyError:
             message = {"message":"email field should be provided"}
-            return  Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)       
+            return  Response(message, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.filter(email=email).first()
         if user is None:
             message = {"message":"The Email provided is not registered"}
-            return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(data={"email":email})
         serializer.is_valid(raise_exception=True)
         token_generator = PasswordResetTokenGenerator()
@@ -129,7 +129,7 @@ class PasswordResetAPIView(generics.CreateAPIView):
         user = User.objects.filter(email=email).first()
         if user is None:
             message = {"message":"The Email provided is not registered"}
-            return Response(message, status=status.HTTP_406_NOT_ACCEPTABLE)
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         token = request.GET.get("token", "")
         token_generator = PasswordResetTokenGenerator()
         checked_token = token_generator.check_token(user, token)
@@ -143,4 +143,4 @@ class PasswordResetAPIView(generics.CreateAPIView):
             }
         serializer = self.serializer_class(user, data=data)
         serializer.is_valid(raise_exception=True)
-        return Response({"message":"password successfully changed"}, status=status.HTTP_202_ACCEPTED)
+        return Response({"message":"password successfully changed"}, status=status.HTTP_200_OK)
