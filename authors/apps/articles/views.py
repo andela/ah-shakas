@@ -1,13 +1,12 @@
-<<<<<<< HEAD
-=======
-from .models import ArticlesModel
-from .serializers import ArticlesSerializers
->>>>>>> Add article CRUD methods
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
+
 from .permissions import IsOwnerOrReadonly
+from .models import ArticlesModel
+from .serializers import ArticlesSerializers
+
 
 from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel
