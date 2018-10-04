@@ -54,3 +54,18 @@ class ArticlesSerializers(serializers.ModelSerializer):
         )
 
 
+            'createdAt',
+            'updatedAt')
+
+
+class CommentsSerializers(serializers.ModelSerializer):
+   body = serializers.CharField(
+       max_length = 200,
+       required = True,
+       error_messages = {
+           'required': 'Comments field cannot be blank'
+       }
+   )
+   class Meta:
+       model = Comment
+       fields = ('body', 'created_at', 'updated_at', 'author', 'article') 
