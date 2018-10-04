@@ -44,16 +44,22 @@ class Comments(models.Model):
    """
    Model for comments
    """
-   comment_id = models.IntegerField(db_index=True, primary_key=True)
+   
    body = models.CharField(max_length=200)
    created_at = models.DateTimeField(auto_now_add=True)
    updated_at = models.DateTimeField(auto_now=True)
    author = models.ForeignKey(User, related_name='comments', on_delete=models.CASCADE)
-   articles = models.ForeignKey(ArticlesModel, related_name='comments', on_delete=models.CASCADE)
+   article = models.ForeignKey(ArticlesModel, related_name='comments', on_delete=models.CASCADE)
    parent = models.ForeignKey('self',
                null=True,
+               blank=True,
                related_name='threads',
                on_delete=models.CASCADE
                )
-    class Meta:
+
+   def __str__(self):
+       return self.body
+    
+    
+   class Meta:
        ordering = ('-created_at',)
