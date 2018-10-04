@@ -4,12 +4,6 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .permissions import IsOwnerOrReadonly
-from .models import ArticlesModel
-from .serializers import ArticlesSerializers
-
-
-
-from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel, Comment
 from .serializers import ArticlesSerializers, CommentsSerializers
 from .renderers import ArticlesRenderer
