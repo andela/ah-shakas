@@ -77,7 +77,7 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class EmailSentAPIView(APIView):
+class EmailSentAPIView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
     serializer_class = EmailSerializer
@@ -106,13 +106,13 @@ class EmailSentAPIView(APIView):
         message = {"message":"We've sent a password reset link to your email"}
         subject = "Password reset"
         body = render_to_string('password_reset.html', {
-            'link': 'https://google.com?token=' + token,
+            'link': 'http://127.0.0.1:8000/api/users/password_reset?token=' + token,
             'name': user.username,
         })
         send_mail(subject, "Password Reset", "no-reply@Authors-Haven.com", [email], html_message=body)
         return Response(message, status=status.HTTP_200_OK)
 
-class PasswordResetAPIView(APIView):
+class PasswordResetAPIView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
     serializer_class = PasswordResetSerializer
