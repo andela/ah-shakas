@@ -40,7 +40,8 @@ class ArticlesModel(models.Model):
         ordering = ['-createdAt']
 
         
-class Comments(models.Model):
+
+class Comment(models.Model):
    """
    Model for comments
    """
