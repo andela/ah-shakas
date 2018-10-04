@@ -26,6 +26,10 @@ class ArticlesSerializers(serializers.ModelSerializer):
         }
     )
 
+    image_url = serializers.URLField(
+        required=False
+    )
+
     class Meta:
         model = ArticlesModel
         fields = (
@@ -33,6 +37,7 @@ class ArticlesSerializers(serializers.ModelSerializer):
             'description',
             'body',
             'slug',
+            'image_url',
             'author',
             'createdAt',
             'updatedAt')
