@@ -1,5 +1,8 @@
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.reverse import reverse as API_Reverse
+from rest_framework import status
+
+from authors.apps.articles.models import ArticlesModel
 
 class BaseTest(APITestCase):
     """This class provides a base for other tests"""
@@ -62,3 +65,13 @@ class BaseTest(APITestCase):
         slug = self.create_article()
         url = API_Reverse('articles:article-details', {slug: 'slug'})
         return url
+<<<<<<< HEAD
+=======
+
+
+        
+        
+
+
+        
+>>>>>>> Add base tests for articles
