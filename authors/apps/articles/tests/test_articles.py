@@ -44,7 +44,11 @@ class ArticleTests(ArticlesBaseTest):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_can_update(self):
+<<<<<<< HEAD
         """This method checks if a user can update an existing articles"""
+=======
+        """Thie method checks if a user can update an existing articles""" 
+>>>>>>> Add tests for articles CRUD
         token = self.create_user()
         response = self.client.post(self.url, self.article, format='json', HTTP_AUTHORIZATION=token)
         slug = response.data['slug']
@@ -60,19 +64,34 @@ class ArticleTests(ArticlesBaseTest):
         self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_can_delete(self):
+<<<<<<< HEAD
         """This method tests if a user can delete articles"""
+=======
+        """This method tests if a user can delete artiles"""
+>>>>>>> Add tests for articles CRUD
         token = self.create_user()
         response = self.client.post(self.url, self.article, format='json', HTTP_AUTHORIZATION=token)
         slug = response.data['slug']
         url = API_Reverse('articles:article-details', {slug: 'slug'})
         r = self.client.delete(url, format='json', HTTP_AUTHORIZATION=token)
+<<<<<<< HEAD
         self.assertEqual(r.status_code, status.HTTP_200_OK)
         self.assertIn("Article Deleted Successfully", json.dumps(r.data))
 
     def test_unauthorised_user_delete(self):
         """This method tests if a non owner can delete an article"""
+=======
+        self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_unauthorised_user_delete(self):
+        """This metho tests if a non owner can delete an article"""
+>>>>>>> Add tests for articles CRUD
         url = self.single_article_details()
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+<<<<<<< HEAD
     
+=======
+    
+>>>>>>> Add tests for articles CRUD
