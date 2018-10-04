@@ -6,12 +6,6 @@ from rest_framework import status
 from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel
 from .serializers import ArticlesSerializers
-
-
-
-from .permissions import IsOwnerOrReadonly
-from .models import ArticlesModel
-from .serializers import ArticlesSerializers
 from .renderers import ArticlesRenderer
 
 
