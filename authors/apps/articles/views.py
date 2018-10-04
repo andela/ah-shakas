@@ -4,14 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .permissions import IsOwnerOrReadonly
-from .models import ArticlesModel
-from .serializers import ArticlesSerializers
-
-
-from .permissions import IsOwnerOrReadonly
-from .models import ArticlesModel
-from .serializers import ArticlesSerializers
-from .renderers import ArticlesRenderer
+from .models import ArticlesModel, Comment
+from .serializers import ArticlesSerializers, CommentsSerializers
 
 
 class ArticlesList(ListCreateAPIView):
@@ -51,3 +45,21 @@ class ArticlesDetails(RetrieveUpdateDestroyAPIView):
         """This method overwrites the default django for an error message"""
         super().delete(self, request, slug)
         return Response({"message": "Article Deleted Successfully"})
+
+class CommentsListCreateView(ListCreateAPIView):
+    queryset = Comments.objects.all()
+    serializer_class = CommentsSerializers
+    permission_classes= (IsAuthenticatedOrReadOnly,)
+
+
+    def post(self, request, slug):
+        article = ArticlesModel.objects.get(slug=slug)
+        comment = request.data.get('comment',{})
+        comment['author'] = request.user.id
+        comment['article'] = article.pk
+        serializer = self.serializer_class(data=comment)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        
