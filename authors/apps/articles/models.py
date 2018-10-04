@@ -9,6 +9,7 @@ class ArticlesModel(models.Model):
     title = models.CharField(max_length=128, blank=False)
     description = models.CharField(max_length=120, blank=False)
     body = models.TextField(blank=False)
+    image_url = models.URLField(blank=True, null=True)
     createdAt = models.DateTimeField(auto_now_add=True, auto_now=False)
     updatedAt = models.DateTimeField(auto_now=True, auto_now_add=False)
     author = models.ForeignKey(User, related_name='article', on_delete=models.CASCADE)
@@ -32,3 +33,7 @@ class ArticlesModel(models.Model):
         if not self.slug:
             self.slug = self.create_title_slug()
         super().save(*args, **kwargs)
+
+
+    class Meta:
+        ordering = ['-createdAt']
