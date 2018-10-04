@@ -1,6 +1,12 @@
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse as API_Reverse
+<<<<<<< HEAD
 
+=======
+from rest_framework import status
+
+from authors.apps.articles.models import ArticlesModel
+>>>>>>> Add base tests for articles
 
 class ArticlesBaseTest(APITestCase):
     """This class provides a base for other tests"""
