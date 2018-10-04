@@ -108,11 +108,11 @@ class SocialSignUp(CreateAPIView):
                 'oauth_token': serializer.data['access_token'],
                 'oauth_token_secret': request.data['access_token_secret'],
             }
-            print(token)
+            
         elif isinstance(backend, BaseOAuth2):
             #we just need to pass access_token for OAuth2
             token = serializer.data['access_token']
-            print(token)
+            
 
         try:
             #check if the user exists, if exists,we just login but if not it creates a new user
