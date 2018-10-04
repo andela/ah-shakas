@@ -4,6 +4,7 @@ from rest_framework import status
 
 from authors.apps.articles.models import ArticlesModel
 
+from authors.apps.articles.models import ArticlesModel
 
 class ArticlesBaseTest(APITestCase):
     """This class provides a base for other tests"""
