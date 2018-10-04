@@ -27,3 +27,14 @@ class ArticlesDetails(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ArticlesSerializers
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
     lookup_field = 'slug'
+
+
+    def put(self, request, slug):
+        """This method overwrites the """
+        article = ArticlesModel.objects.get(slug=slug)
+        data = request.data.get('article', {})
+        serializer = self.serializer_class(article, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
