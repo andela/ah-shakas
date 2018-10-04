@@ -196,8 +196,19 @@ class PasswordResetSerializer(serializers.ModelSerializer):
     serializes password and email
     """
     email = serializers.EmailField(max_length=255, required=True)
-    password = serializers.CharField(min_length=8, max_length=255, required=True)
-
+    password = serializers.RegexField(
+        regex="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",
+        max_length=128,
+        min_length=8,
+        write_only=True,
+        required=True,
+        error_messages={
+            'required': 'Password is required',
+            'invalid': 'Password must have a number and a letter',
+            'min_length': 'Password must have at least 8 characters',
+            'max_length': 'Password cannot be more than 128 characters'
+        }
+    )
     class Meta:
         model = User
         fields = ('email', 'password')
