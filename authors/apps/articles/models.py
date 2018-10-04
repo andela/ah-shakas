@@ -1,12 +1,7 @@
 from django.db import models
-<<<<<<< HEAD
 from django.utils.text import slugify
 
 from authors.apps.authentication.models import User
-=======
-from authors.apps.authentication.models import User
-from django.utils.text import slugify
->>>>>>> Add automated slug method
 
 
 class ArticlesModel(models.Model):
@@ -15,14 +10,11 @@ class ArticlesModel(models.Model):
     title = models.CharField(max_length=128, blank=False)
     description = models.CharField(max_length=120, blank=False)
     body = models.TextField(blank=False)
-<<<<<<< HEAD
     image_url = models.URLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
-=======
     createdAt = models.DateTimeField(auto_now_add=True, auto_now=False)
     updatedAt = models.DateTimeField(auto_now=True, auto_now_add=False)
->>>>>>> Add automated slug method
     author = models.ForeignKey(User, related_name='article', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -44,7 +36,7 @@ class ArticlesModel(models.Model):
         if not self.slug:
             self.slug = self.create_title_slug()
         super().save(*args, **kwargs)
-<<<<<<< HEAD
+
 
     class Meta:
         ordering = ['-created_at']
@@ -74,5 +66,3 @@ class Comment(models.Model):
     
    class Meta:
        ordering = ('-created_at',)
-=======
->>>>>>> Add automated slug method
