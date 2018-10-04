@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
 from authors.apps.profiles.models import Profile
-from .models import ArticlesModel
 from authors.apps.profiles.serializers import ProfileSerializer
+from .models import ArticlesModel, Comment
+
 
 
 class ArticlesSerializers(serializers.ModelSerializer):
