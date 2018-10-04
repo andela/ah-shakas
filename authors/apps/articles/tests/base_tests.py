@@ -1,7 +1,6 @@
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse as API_Reverse
 
-
 class ArticlesBaseTest(APITestCase):
     """This class provides a base for other tests"""
 
