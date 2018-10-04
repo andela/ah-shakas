@@ -44,7 +44,11 @@ class ArticleTests(ArticlesBaseTest):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_can_update(self):
+<<<<<<< HEAD
         """This method checks if a user can update an existing articles"""
+=======
+        """Thie method checks if a user can update an existing articles""" 
+>>>>>>> Add tests for articles CRUD
         token = self.create_user()
         response = self.client.post(self.url, self.article, format='json', HTTP_AUTHORIZATION=token)
         slug = response.data['slug']
