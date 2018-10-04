@@ -39,7 +39,7 @@ class ArticlesModel(models.Model):
         ordering = ['-created_at']
         ordering = ['-createdAt']
 
-
+        
 class Comments(models.Model):
    """
    Model for comments
