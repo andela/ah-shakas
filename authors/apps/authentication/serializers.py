@@ -189,7 +189,7 @@ class EmailSerializer(serializers.Serializer):
     """
     serializes email
     """
-    email = serializers.EmailField(max_length=255)
+    email = serializers.EmailField(max_length=255, required=True)
 
 class PasswordResetSerializer(serializers.ModelSerializer):
     """

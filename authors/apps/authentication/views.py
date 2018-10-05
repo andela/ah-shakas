@@ -10,7 +10,7 @@ from .renderers import UserJSONRenderer
 from .serializers import (
     LoginSerializer, RegistrationSerializer, UserSerializer, EmailSerializer, PasswordResetSerializer
 )
-
+import os
 from django.template.loader import render_to_string
 
 
@@ -88,28 +88,24 @@ class EmailSentAPIView(generics.CreateAPIView):
         token gets generated and sent to users via link.
         """
         email = request.data.get('email', {})
-        try:
-            if request.data['email'].strip() == "":
-                message = {"message":"email field cannot be empty"}
-                return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        except KeyError:
-            message = {"message":"email field should be provided"}
-            return  Response(message, status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.filter(email=email).first()
-        if user is None:
-            message = {"message":"The Email provided is not registered"}
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.serializer_class(data={"email":email})
         serializer.is_valid(raise_exception=True)
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            message = {"message":"The email provided is not registered"}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
         token_generator = PasswordResetTokenGenerator()
         token = token_generator.make_token(user)
         message = {"message":"We've sent a password reset link to your email"}
         subject = "Password reset"
+        reset_link = os.getenv('PASSWORD_RESET')
         body = render_to_string('password_reset.html', {
-            'link': 'http://127.0.0.1:8000/api/users/password_reset?token=' + token,
+            'link':reset_link+'?token=' + token,
             'name': user.username,
         })
-        send_mail(subject, "Password Reset", "no-reply@Authors-Haven.com", [email], html_message=body)
+        sender = os.getenv('EMAIL_SENDER')
+        send_mail(subject, "Password Reset", sender, [email], html_message=body)
         return Response(message, status=status.HTTP_200_OK)
 
 class PasswordResetAPIView(generics.CreateAPIView):
