@@ -31,7 +31,7 @@ class TestEmailSent(APITestCase):
         """
         response = self.client.post(self.url, data={"email":"koechkevin@gmail.com"})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.content, b'{"user": {"message": "The Email provided is not registered"}}')
+        self.assertEqual(response.content, b'{"user": {"message": "The email provided is not registered"}}')
 
     def test_email_field_missing(self):
         """
@@ -39,14 +39,14 @@ class TestEmailSent(APITestCase):
         """
         response = self.client.post(self.url, data={})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.content, b'{"user": {"message": "email field should be provided"}}')
+        self.assertEqual(response.content, b'{"user": {"email": ["Enter a valid email address."]}}')
 
     def test_empty_email(self):
         """
         case where a user provides empty email field
         """
         response = self.client.post(self.url, data={"email":""})
-        self.assertEqual(response.content, b'{"user": {"message": "email field cannot be empty"}}')
+        self.assertEqual(response.content, b'{"user": {"email": ["This field may not be blank."]}}')
         self.assertEqual(response.status_code, 400)
 
     def test_successful_email(self):
