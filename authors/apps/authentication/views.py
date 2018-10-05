@@ -4,12 +4,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.core.mail import send_mail
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .models import User
 from .renderers import UserJSONRenderer
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from .serializers import (
     LoginSerializer, RegistrationSerializer, UserSerializer, EmailSerializer, PasswordResetSerializer
 )
+from .password_token import generate_password_token, get_password_token_data
 import os
 from django.template.loader import render_to_string
 
@@ -96,7 +97,8 @@ class EmailSentAPIView(generics.CreateAPIView):
             message = {"message":"The email provided is not registered"}
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
         token_generator = PasswordResetTokenGenerator()
-        token = token_generator.make_token(user)
+        password_token = token_generator.make_token(user)
+        token = generate_password_token(email, password_token)
         message = {"message":"We've sent a password reset link to your email"}
         subject = "Password reset"
         reset_link = os.getenv('PASSWORD_RESET')
@@ -120,23 +122,33 @@ class PasswordResetAPIView(generics.CreateAPIView):
         Token gets verified against the user.
         Once all checks have passed, the new password gets saved.
         """
+        user_token = request.GET.get("token", "")
+        try:
+            token_data = get_password_token_data(user_token)
+            if not token_data['email']:
+                return Response({"message":"invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+        except :
+            return Response({"message":"invalid token"}, status=status.HTTP_400_BAD_REQUEST)
         password = request.data.get('password', {})
-        email = request.data.get('email', {})
-        user = User.objects.filter(email=email).first()
-        if user is None:
-            message = {"message":"The Email provided is not registered"}
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
-        token = request.GET.get("token", "")
-        token_generator = PasswordResetTokenGenerator()
-        checked_token = token_generator.check_token(user, token)
-        if not checked_token:
-           return Response({"message":"invalid token"}, status=status.HTTP_400_BAD_REQUEST)
-        user.set_password(password)
-        user.save()
+        email = token_data['email']
         data={
             "email":email,
             "password":password
             }
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            message = {"message":"The Email provided is not registered"}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+        token = token_data['token']
+        token_generator = PasswordResetTokenGenerator()
+        checked_token = token_generator.check_token(user, token)
+        if not checked_token:
+           return Response({"message":"invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.serializer_class(user, data=data)
+        serializer.is_valid(raise_exception=True)
+        user.set_password(password)
+        user.save()
         serializer = self.serializer_class(user, data=data)
         serializer.is_valid(raise_exception=True)
         return Response({"message":"password successfully changed"}, status=status.HTTP_200_OK)
