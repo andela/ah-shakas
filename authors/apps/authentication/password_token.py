@@ -24,7 +24,7 @@ def get_password_token_data(token):
     try:
         raw_data = jwt.decode(token, settings.SECRET_KEY)
     except jwt.InvalidTokenError:
-        return {'':''}
+        return {}
     email = raw_data['email']
     password_token = raw_data['token']
     return {'email':email, 'token':password_token}

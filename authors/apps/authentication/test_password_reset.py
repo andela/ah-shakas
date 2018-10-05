@@ -87,7 +87,7 @@ class TestPasswordReset(APITestCase):
         """
         test a case where an invalid token is provided or token has been tampered with
         """
-        response = self.client.put(self.url+'r', data={"email":"koechkevin92@gmail.com"})
+        response = self.client.put(self.url+'r', data={})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.content, b'{"user": {"message": "invalid token"}}')
 
