@@ -89,7 +89,7 @@ class EmailSentAPIView(generics.CreateAPIView):
         token gets generated and sent to users via link.
         """
         email = request.data.get('email', {})
-        serializer = self.serializer_class(data={"email":email})
+        serializer = self.serializer_class(data={'email':email})
         serializer.is_valid(raise_exception=True)
         try:
             user = User.objects.get(email=email)
