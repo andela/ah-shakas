@@ -23,6 +23,7 @@ class TestEmailSent(APITestCase):
             }
         }
         self.client.post(self.register_url, self.user, format="json")
+        User.is_active = True
 
     def test_unregistered_email(self):
         """
@@ -73,6 +74,7 @@ class TestPasswordReset(APITestCase):
         }
         self.register_url = api_reverse('authentication:user-registration')
         self.client.post(self.register_url, self.user, format="json")
+        User.is_active = True
         token_generator = PasswordResetTokenGenerator()
         user_object = User.objects.filter(email='koechkevin92@gmail.com').first()
         token = token_generator.make_token(user_object)
