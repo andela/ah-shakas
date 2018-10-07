@@ -10,8 +10,8 @@ class ArticlesModel(models.Model):
     description = models.CharField(max_length=120, blank=False)
     body = models.TextField(blank=False)
     image_url = models.URLField(blank=True, null=True)
-    createdAt = models.DateTimeField(auto_now_add=True, auto_now=False)
-    updatedAt = models.DateTimeField(auto_now=True, auto_now_add=False)
+    created_at = models.DateTimeField(auto_now_add=True, auto_now=False)
+    updated_at = models.DateTimeField(auto_now=True, auto_now_add=False)
     author = models.ForeignKey(User, related_name='article', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -34,6 +34,5 @@ class ArticlesModel(models.Model):
             self.slug = self.create_title_slug()
         super().save(*args, **kwargs)
 
-
     class Meta:
-        ordering = ['-createdAt']
+        ordering = ['-created_at']
