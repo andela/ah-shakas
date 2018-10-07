@@ -8,7 +8,6 @@ from .models import ArticlesModel
 from .serializers import ArticlesSerializers
 
 
-
 class ArticlesList(generics.ListCreateAPIView):
     queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers
