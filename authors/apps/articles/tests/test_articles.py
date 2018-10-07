@@ -1,15 +1,11 @@
-from rest_framework.test import APITestCase
-from rest_framework.authtoken.models import Token
 from rest_framework.reverse import reverse as API_Reverse
 from rest_framework import status
 import json
 
 from authors.apps.articles.tests.base_tests import ArticlesBaseTest
-from authors.apps.articles.models import ArticlesModel
 
 
-class ArticleTests(ArticlesBaseTest):    
-
+class ArticleTests(ArticlesBaseTest):
   
     def test_anyone_can_get_articles(self):
         """This method tests is anyone can access articles endpoint"""
@@ -48,7 +44,7 @@ class ArticleTests(ArticlesBaseTest):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_can_update(self):
-        """Thie method checks if a user can update an existing articles""" 
+        """This method checks if a user can update an existing articles"""
         token = self.create_user()
         response = self.client.post(self.url, self.article, format='json', HTTP_AUTHORIZATION=token)
         slug = response.data['slug']
@@ -64,7 +60,7 @@ class ArticleTests(ArticlesBaseTest):
         self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_user_can_delete(self):
-        """This method tests if a user can delete artiles"""
+        """This method tests if a user can delete articles"""
         token = self.create_user()
         response = self.client.post(self.url, self.article, format='json', HTTP_AUTHORIZATION=token)
         slug = response.data['slug']
@@ -73,9 +69,7 @@ class ArticleTests(ArticlesBaseTest):
         self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_unauthorised_user_delete(self):
-        """This metho tests if a non owner can delete an article"""
+        """This method tests if a non owner can delete an article"""
         url = self.single_article_details()
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    
