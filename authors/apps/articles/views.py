@@ -8,7 +8,6 @@ from .models import ArticlesModel
 from .serializers import ArticlesSerializers
 from .renderers import ArticlesRenderer
 
-
 class ArticlesList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     renderer_classes = (ArticlesRenderer,)
