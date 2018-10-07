@@ -39,6 +39,6 @@ class ArticlesSerializers(serializers.ModelSerializer):
             'slug',
             'image_url',
             'author',
-            'createdAt',
-            'updatedAt'
+            'created_at',
+            'updated_at'
         )
