@@ -1,8 +1,6 @@
 from rest_framework.test import APITestCase
 from rest_framework.reverse import reverse as API_Reverse
-from rest_framework import status
 
-from authors.apps.articles.models import ArticlesModel
 
 from authors.apps.articles.models import ArticlesModel
 
