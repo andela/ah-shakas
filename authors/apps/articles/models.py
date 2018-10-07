@@ -37,7 +37,6 @@ class ArticlesModel(models.Model):
             self.slug = self.create_title_slug()
         super().save(*args, **kwargs)
 
-
     class Meta:
         ordering = ['-created_at']
    
