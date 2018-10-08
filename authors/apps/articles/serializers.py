@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import ArticlesModel
+from authors.apps.authentication.serializers import UserSerializer
 
 
 class ArticlesSerializers(serializers.ModelSerializer):
@@ -30,6 +31,10 @@ class ArticlesSerializers(serializers.ModelSerializer):
         required=False
     )
 
+    author = UserSerializer(
+        read_only=True
+    )
+
     class Meta:
         model = ArticlesModel
         fields = (
@@ -42,3 +47,4 @@ class ArticlesSerializers(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         )
+
