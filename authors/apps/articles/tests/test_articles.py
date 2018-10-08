@@ -66,7 +66,8 @@ class ArticleTests(ArticlesBaseTest):
         slug = response.data['slug']
         url = API_Reverse('articles:article-details', {slug: 'slug'})
         r = self.client.delete(url, format='json', HTTP_AUTHORIZATION=token)
-        self.assertEqual(r.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(r.status_code, status.HTTP_200_OK)
+        self.assertIn("Article Deleted Successfully", json.dumps(r.data))
 
     def test_unauthorised_user_delete(self):
         """This method tests if a non owner can delete an article"""
