@@ -1,4 +1,3 @@
-
 from rest_framework import status
 from rest_framework.reverse import reverse as API_Reverse
 from rest_framework.test import APITestCase, APIClient
@@ -107,9 +106,3 @@ class CommentsTests(BaseTest):
         url = API_Reverse('articles:comment-details', {slug: 'slug', id: 'id'})
         response = self.unauthorised_client.put(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-
-    
-
-
-
