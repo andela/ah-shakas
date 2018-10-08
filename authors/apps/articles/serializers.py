@@ -4,7 +4,6 @@ from authors.apps.profiles.models import Profile
 from authors.apps.profiles.serializers import ProfileSerializer
 from .models import ArticlesModel, Comment
 
-
 class ArticlesSerializers(serializers.ModelSerializer):
     title = serializers.CharField(
         required=True,
