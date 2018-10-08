@@ -30,7 +30,6 @@ class ArticlesDetails(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
     lookup_field = 'slug'
 
-
     def put(self, request, slug):
         """This method overwrites the """
         article = ArticlesModel.objects.get(slug=slug)
