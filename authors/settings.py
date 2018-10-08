@@ -194,13 +194,5 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("GOOGLE_SECRET")
 
 
 # Activate django-heroku for Heroku
-<<<<<<< HEAD
-# django_heroku.settings(locals())
-
-# Parse Database environmental variables
-
-# DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-=======
 django_heroku.settings(locals())
 
->>>>>>> feat(Social-Auth): Implement Social SignIn and SignUp
