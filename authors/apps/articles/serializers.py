@@ -1,10 +1,7 @@
 from rest_framework import serializers
 from .models import ArticlesModel
 from authors.apps.authentication.serializers import UserSerializer
-<<<<<<< HEAD
 from authors.apps.articles.helpers import get_time_to_read_article
-=======
->>>>>>> Add author fields
 
 
 class ArticlesSerializers(serializers.ModelSerializer):
