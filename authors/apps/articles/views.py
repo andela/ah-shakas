@@ -67,4 +67,53 @@ class CommentsListCreateView(ListCreateAPIView):
         comments = Comment.objects.filter(article=article)
         serializer = self.serializer_class(comments.all(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+    queryset = Comment.objects.all()
+    lookup_field = 'id'
+    lookup_url_kwarg = 'id'
+    serializer_class = CommentsSerializers
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
+
+    def get_article(self, slug):
+        article = ArticlesModel.objects.filter(slug=slug)
+        if not article:
+            message = {'message': 'Article slug is not valid.'}
+            return message
+        # queryset always has 1 thing as long as it is unique
+        return article[0]
+    
+    def destroy(self, request, slug, id):
+        article = self.get_article(slug)
+        if isinstance(article, dict):
+            return Response(article, status=status.HTTP_404_NOT_FOUND)
+
+        comment = article.comments.filter(id=id) 
+        if not comment:
+            message = {'detail': 'Comment not found.'}
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        comment[0].delete()
+        message = {'detail': 'You have deleted the comment'}
+        return Response(message, status=status.HTTP_200_OK)
+
+    def update(self, request, slug, id):
+        article = self.get_article(slug)
+        if isinstance(article, dict):
+            return Response(article, status=status.HTTP_404_NOT_FOUND)
+
+        comment = article.comments.filter(id=id) 
+        if not comment:
+            message = {'detail': 'Comment not found.'}
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
         
+        new_comment = request.data.get('comment',{})
+        new_comment['article'] = article.pk
+        new_comment['author'] = request.user.id
+        serializer = self.serializer_class(data=new_comment)
+        serializer.is_valid(raise_exception=True)
+        comment[0].body = serializer.data['body']
+        comment[0].save()
+        serializer = self.serializer_class(comment[0])
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
