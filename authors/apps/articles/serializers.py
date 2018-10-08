@@ -3,7 +3,6 @@ from .models import ArticlesModel
 from authors.apps.authentication.serializers import UserSerializer
 
 
-
 class ArticlesSerializers(serializers.ModelSerializer):
 
     title = serializers.CharField(
