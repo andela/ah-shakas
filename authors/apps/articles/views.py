@@ -47,12 +47,18 @@ class ArticlesDetails(RetrieveUpdateDestroyAPIView):
         return Response({"message": "Article Deleted Successfully"})
 
 class CommentsListCreateView(ListCreateAPIView):
+    """
+    Class for creating and listing all comments
+    """
     queryset = Comment.objects.all()
     serializer_class = CommentsSerializers
     permission_classes= (IsAuthenticatedOrReadOnly,)
 
 
     def post(self, request, slug):
+        """
+        Method for creating article
+        """
         article = ArticlesModel.objects.get(slug=slug)
         comment = request.data.get('comment',{})
         comment['author'] = request.user.id
@@ -63,6 +69,9 @@ class CommentsListCreateView(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def get(self, request, slug): 
+        """
+        Method for getting all comments
+        """
         article = ArticlesModel.objects.get(slug=slug)
         comments = Comment.objects.filter(article=article)
         serializer = self.serializer_class(comments.all(), many=True)
@@ -70,6 +79,9 @@ class CommentsListCreateView(ListCreateAPIView):
 
 
 class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+    """
+    Class for retrieving, updating and deleting a comment
+    """
     queryset = Comment.objects.all()
     lookup_field = 'id'
     lookup_url_kwarg = 'id'
@@ -77,6 +89,9 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
 
     def get_article(self, slug):
+        """
+        This method returns article for further reference made to article slug
+        """
         article = ArticlesModel.objects.filter(slug=slug)
         if not article:
             message = {'message': 'Article slug is not valid.'}
@@ -85,6 +100,9 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         return article[0]
     
     def destroy(self, request, slug, id):
+        """
+        Method for deleting a comment
+        """
         article = self.get_article(slug)
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
@@ -98,6 +116,9 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         return Response(message, status=status.HTTP_200_OK)
 
     def update(self, request, slug, id):
+        """
+        Method for editing a comment
+        """
         article = self.get_article(slug)
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
