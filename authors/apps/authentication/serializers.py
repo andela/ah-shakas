@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import default_token_generator, PasswordResetTokenGenerator
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
 from .models import User
@@ -195,7 +196,6 @@ class PasswordResetSerializer(serializers.ModelSerializer):
     """
     serializes password and email
     """
-
     email = serializers.EmailField(max_length=255, required=True)
     password = serializers.RegexField(
         regex="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$",

@@ -2,8 +2,11 @@ from django.urls import path
 from .views import (
     LoginAPIView, RegistrationAPIView, UserRetrieveUpdateAPIView, EmailSentAPIView, PasswordResetAPIView
 )
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 77ecb5063c8a30b5362bd7bc7767bf8bd2f346f7
 # Specify a namespace
 app_name="authentication"
 
