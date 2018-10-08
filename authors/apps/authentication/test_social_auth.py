@@ -31,7 +31,7 @@ class SocialAuthSignUp(APITestCase):
 
     def test_for_passing_token(self):
         provider = 'facebook'
-        access_token = 'EAAe6UMnIZBRoBAFzISnSiXSP089QmjFpzP0GngED0fErjz6c53O2jmL7lvIZA2suOTe58UCC2BK7zC1Ugr2Qp8fqqAkPlqrQCN5uBpauiw0kRlH9QJ9dtHRUP21DyZCvH8ADZARORufMJeLyBp5WJ69Woo0eLdwMZAib7VhBnpqZCGgZC2pt0NhoqoFkG7vcGbKvaF6ujNeKDM8mZAPJBTI3PEZCTe82bbcQnZARQNu7PvecNv4Um46STZA'
+        access_token = 'EAAe6UMnIZBRoBAPXW605GDyMZB3RaLvgJAsi1fRaQM3kmSkQ4ZACNnz2ZC5fRvdqSFT7njB908l4XTNR1pZCaWlx8xzCzMV0lmtVudscfBIwBIPiQUXzFy5XWVA1iHgnjgFA3vBdQvEo4Tm6YPlCaEIUhQzdDz1Lh6SAC7psV0wsNkqcSdemDLk8yH9L9MFi5u1Ot075vIir3A9fc4FAmzqio9e6W16edB4ZB0ihZAra0rY0XZBWkQgH'
         data={"provider":provider,"access_token":access_token}
         resp=self.client.post(self.social_url,data=data)
         self.assertEqual(resp.status_code,201)
