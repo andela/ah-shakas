@@ -6,12 +6,14 @@ from rest_framework import status
 from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel
 from .serializers import ArticlesSerializers
+from .renderers import ArticlesRenderer
 
 
 class ArticlesList(generics.ListCreateAPIView):
     queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    renderer_classes = (ArticlesRenderer,)
 
     def post(self, request):
         article = request.data.get('article', {})
@@ -25,6 +27,7 @@ class ArticlesList(generics.ListCreateAPIView):
 class ArticlesDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers
+    renderer_classes = (ArticlesRenderer,)
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
     lookup_field = 'slug'
 
@@ -37,3 +40,8 @@ class ArticlesDetails(generics.RetrieveUpdateDestroyAPIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, slug):
+        """This method overwrites the default django for an error message"""
+        super().delete(self, request, slug)
+        return Response({"message": "Article Deleted Successfully"})
