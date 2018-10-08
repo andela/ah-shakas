@@ -140,4 +140,4 @@ class SocialSignUp(CreateAPIView):
                             headers=headers)
         else:
             return Response({"error": "Something went wrong with the authentication, please try again"},
-
+                                        status=status.HTTP_400_BAD_REQUEST)
