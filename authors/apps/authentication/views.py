@@ -149,6 +149,4 @@ class PasswordResetAPIView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user.set_password(password)
         user.save()
-        serializer = self.serializer_class(user, data=data)
-        serializer.is_valid(raise_exception=True)
         return Response({"message":"password successfully changed"}, status=status.HTTP_200_OK)
