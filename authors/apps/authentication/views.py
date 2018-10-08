@@ -14,8 +14,7 @@ from .password_token import generate_password_token, get_password_token_data
 import os
 from django.template.loader import render_to_string
 
-
-class RegistrationAPIView(CreateAPIView):
+class RegistrationAPIView(APIView):
     # Allow any user (authenticated or not) to hit this endpoint.
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
