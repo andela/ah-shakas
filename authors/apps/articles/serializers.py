@@ -66,6 +66,18 @@ class CommentsSerializers(serializers.ModelSerializer):
            'required': 'Comments field cannot be blank'
        }
    )
+
+   def to_representation(self,instance):
+       """
+       overide representatiom for custom output
+       """
+       representation = super(CommentsSerializers, self).to_representation(instance)
+       representation['created_at'] = instance.created_at.strftime('%d %b %Y %H:%M:%S')
+       representation['updated_at'] = instance.updated_at.strftime('%d %b %Y %H:%M:%S')
+       representation['author'] = instance.author.username
+       representation['article'] = instance.article.title
+       return representation
+
    class Meta:
        model = Comment
        fields = ('id', 'body', 'created_at', 'updated_at', 'author', 'article') 
