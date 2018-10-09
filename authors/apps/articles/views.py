@@ -19,7 +19,6 @@ class ArticlesList(generics.ListCreateAPIView):
         serializer = self.serializer_class(data=article)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
-
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
