@@ -6,7 +6,9 @@ from authors.apps.articles.tests.base_tests import BaseTest
 
 
 class CommentsTests(BaseTest):
-    article_url = '/api/articles/gloria-2/comments'
+    """
+    Comments test cases
+    """
     
     def create_comment(self):
         slug = self.create_article()
@@ -104,5 +106,5 @@ class CommentsTests(BaseTest):
         response = self.client.post(url, self.comment, format='json')
         id = response.data['id']
         url = API_Reverse('articles:comment-details', {slug: 'slug', id: 'id'})
-        response = self.unauthorised_client.put(url)
+        response = self.unauthorised_client.put(url, data={'comment': {'body': 'New comment'}}, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
