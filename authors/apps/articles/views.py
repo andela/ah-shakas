@@ -28,7 +28,7 @@ class ArticlesList(ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class ArticlesDetails(RetrieveUpdateDestroyAPIView):
+class ArticlesDetails(RetrieveUpdateDestroyAPIView, ):
     queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers
     renderer_classes = (ArticlesRenderer,)
@@ -78,12 +78,16 @@ class CommentsListCreateView(ListCreateAPIView):
         Method for getting all comments
         """
         article = ArticlesModel.objects.get(slug=slug)
-        comments = Comment.objects.filter(article=article)
+        comments = article.comments.filter(parent=None)
         serializer = self.serializer_class(comments.all(), many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        data = {
+            'count': comments.count(),
+            'comments': serializer.data
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
 
-class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIView):
     """
     Class for retrieving, updating and deleting a comment
     """
@@ -103,6 +107,33 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
             return message
         # queryset always has 1 thing as long as it is unique
         return article[0]
+    
+    def create(self, request, slug, id):
+        """Create a child comment on a parent comment."""
+        context = super(CommentsRetrieveUpdateDestroy,
+                        self).get_serializer_context()
+        
+        article = self.get_article(slug)
+        if isinstance(article, dict):
+            return Response(article, status=status.HTTP_404_NOT_FOUND)
+        parent = article.comments.filter(id=id).first().pk
+        if not parent:
+            message = {'detail': 'Comment not found.'}
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        body = request.data.get('comment', {}).get('body', {})
+        
+        data = {
+            'body': body,
+            'parent': parent,
+            'article': article.pk,
+            'author': request.user.id
+        }
+        
+        serializer = self.serializer_class(
+            data=data, context=context)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def destroy(self, request, slug, id):
         """
