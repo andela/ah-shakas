@@ -25,4 +25,3 @@ urlpatterns = [
     path('api/', include(('authors.apps.authentication.urls', 'authentication'), namespace='authentication')),
     path(r'', schema_view)
 ]
-
