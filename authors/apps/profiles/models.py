@@ -9,7 +9,7 @@ from authors import settings
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bio = models.TextField(max_length=255, default='Update your bio')
-    image_url = models.URLField(max_length=250)
+    image_url = models.URLField(max_length=250, default="image-url", null=True)
     following = models.BooleanField(default=False)
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
