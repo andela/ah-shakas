@@ -38,6 +38,14 @@ class ArticlesSerializers(serializers.ModelSerializer):
         serializer = ProfileSerializer(instance=Profile.objects.get(user=obj.author))
         return serializer.data
 
+    def to_representation(self,instance):
+       """
+       overide representatiom for custom output
+       """
+       representation = super(ArticlesSerializers, self).to_representation(instance)
+       representation['time_to_read'] = get_time_to_read_article(instance)
+       return representation
+    
     class Meta:
         model = ArticlesModel
         fields = (
