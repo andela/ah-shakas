@@ -123,18 +123,14 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
 
-        comment = article.comments.filter(id=id) 
+        comment = article.comments.get(id=id)
         if not comment:
             message = {'detail': 'Comment not found.'}
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         
         new_comment = request.data.get('comment',{})
-        new_comment['article'] = article.pk
-        new_comment['author'] = request.user.id
-        serializer = self.serializer_class(data=new_comment)
+        serializer = self.serializer_class(comment, data=new_comment, partial=True)
         serializer.is_valid(raise_exception=True)
-        comment[0].body = serializer.data['body']
-        comment[0].save()
-        serializer = self.serializer_class(comment[0])
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer.save(article=article, author=request.user)
+        return Response(serializer.data)
     
