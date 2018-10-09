@@ -27,6 +27,13 @@ class ProfileTest(APITestCase):
         self.url_register = reverse('authentication:user-registration')
         self.url_profile = reverse('profiles:user-profile', kwargs={"username": self.user['user']['username']})
     
+    def registration(self):
+        response = self.client.post(self.url_register, self.user, format='json')
+        token=response.data['token']
+        return token
+    
+    
+
     def test_model_can_create_user_profile(self):
         """
         Test API can successfully register a new user
@@ -37,11 +44,13 @@ class ProfileTest(APITestCase):
         self.assertNotEqual(old_count, new_count)
 
     def test_get_user_profile(self):
+        token = self.registration()
         self.client.post(self.url_register, self.user, format='json')
-        response = self.client.get(self.url_profile, format='json')
+        response = self.client.get(self.url_profile, format='json', HTTP_AUTHORIZATION=token)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_update_user_profile(self):
+        token = self.registration()
         self.client.post(self.url_register, self.user, format='json')
         response = self.client.put(self.url_profile,
         { 
@@ -49,10 +58,11 @@ class ProfileTest(APITestCase):
                 'username': 'jDoe', 
                 'bio': 'I am that guy'
             }
-        }, format='json')
+        }, format='json', HTTP_AUTHORIZATION=token)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_profile_short_username_format(self):
+        token = self.registration()
         self.client.post(self.url_register, self.user, format='json')
         response = self.client.put(self.url_profile,
         { 
@@ -60,11 +70,13 @@ class ProfileTest(APITestCase):
                 'username': 'jDo', 
                 'bio': 'I am that guy'
             }
-        }, format='json')
+        }, format='json', HTTP_AUTHORIZATION=token)
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(b'Username must have at least 4 characters', response.content)
 
     def test_update_profile_no_username(self):
+        token = self.registration()
         self.client.post(self.url_register, self.user, format='json')
         response = self.client.put(self.url_profile,
         { 
@@ -72,11 +84,12 @@ class ProfileTest(APITestCase):
                 'username': '', 
                 'bio': 'I am that guy'
             }
-        }, format='json')
+        }, format='json', HTTP_AUTHORIZATION=token)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(b'This field may not be blank', response.content)
 
     def test_update_profile_spaced_username(self):
+        token = self.registration()
         self.client.post(self.url_register, self.user, format='json')
         response = self.client.put(self.url_profile,
         { 
@@ -84,11 +97,12 @@ class ProfileTest(APITestCase):
                 'username': 'ia o', 
                 'bio': 'I am that guy'
             }
-        }, format='json')
+        }, format='json', HTTP_AUTHORIZATION=token)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(b'Username cannot have a space', response.content)
 
     def test_update_profile_blank_bio(self):
+        token = self.registration()
         self.client.post(self.url_register, self.user, format='json')
         response = self.client.put(self.url_profile,
         { 
@@ -96,11 +110,12 @@ class ProfileTest(APITestCase):
                 'username': 'iano', 
                 'bio': ''
             }
-        }, format='json')
+        }, format='json', HTTP_AUTHORIZATION=token)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(b'This field may not be blank', response.content)
 
     def test_update_profile_spaces_only_in__bio(self):
+        token = self.registration()
         self.client.post(self.url_register, self.user, format='json')
         response = self.client.put(self.url_profile,
         { 
@@ -108,6 +123,6 @@ class ProfileTest(APITestCase):
                 'username': 'iano', 
                 'bio': '  '
             }
-        }, format='json')
+        }, format='json', HTTP_AUTHORIZATION=token)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(b'This field may not be blank', response.content)
