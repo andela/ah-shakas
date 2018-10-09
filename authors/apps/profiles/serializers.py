@@ -26,20 +26,17 @@ class ProfileSerializer(serializers.ModelSerializer):
             'min_length': 'Username must have at least 4 characters'
         }
     )
-    bio = serializers.CharField(max_length=255, default='Update your bio')
-    image_url = serializers.URLField(max_length=250, default='image-link')
-    following = serializers.BooleanField(default=False)
 
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
-        super(ProfileSerializer, self).update(instance, validated_data)
+        super().update(instance, validated_data)
         if user_data is not None and user_data.get('username') is not None:
             instance.user.username = user_data.get('username')
             instance.user.save()
         return instance
 
+   
     class Meta:
         model = Profile
         fields = ('username', 'bio', 'image_url', 'following')
-        read_only_fields = ['username']
