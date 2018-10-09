@@ -15,7 +15,7 @@ class ProfileJSONRenderer(JSONRenderer):
         if errors is not None:
             # As mentioned about, we will let the default JSONRenderer handle
             # rendering errors.
-            return super(ProfileJSONRenderer, self).render(data)
+            return super().render(data)
 
 
         # Finally, we can render our data under the "profile" namespace.
