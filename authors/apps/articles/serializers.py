@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import ArticlesModel
 from authors.apps.authentication.serializers import UserSerializer
-
+from authors.apps.articles.helpers import get_time_to_read_article
 
 class ArticlesSerializers(serializers.ModelSerializer):
 
@@ -35,6 +35,14 @@ class ArticlesSerializers(serializers.ModelSerializer):
         read_only=True
     )
 
+    def to_representation(self,instance):
+       """
+       overide representatiom for custom output
+       """
+       representation = super(ArticlesSerializers, self).to_representation(instance)
+       representation['time_to_read'] = get_time_to_read_article(instance)
+       return representation
+    
     class Meta:
         model = ArticlesModel
         fields = (
