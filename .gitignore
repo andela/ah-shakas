@@ -103,4 +103,4 @@ db.sqlite3
 .*.swo
  # vim python config
 .ycm_extra_conf.py
-
+*.DS_Store
