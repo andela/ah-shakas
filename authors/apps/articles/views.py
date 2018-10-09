@@ -51,6 +51,17 @@ class ArticlesDetails(RetrieveUpdateDestroyAPIView, ):
         super().delete(self, request, slug)
         return Response({"message": "Article Deleted Successfully"})
 
+def get_article(slug):
+        """
+        This method returns article for further reference made to article slug
+        """
+        article = ArticlesModel.objects.filter(slug=slug).first()
+        if not article:
+            message = {'message': 'Article slug is not valid.'}
+            return message
+        # queryset always has 1 thing as long as it is unique
+        return article
+    
 class CommentsListCreateView(ListCreateAPIView):
     """
     Class for creating and listing all comments
@@ -64,7 +75,10 @@ class CommentsListCreateView(ListCreateAPIView):
         """
         Method for creating article
         """
-        article = ArticlesModel.objects.get(slug=slug)
+        article = get_article(slug=slug)
+        if isinstance(article, dict):
+            return Response(article, status=status.HTTP_404_NOT_FOUND)
+
         comment = request.data.get('comment',{})
         comment['author'] = request.user.id
         comment['article'] = article.pk
@@ -77,7 +91,9 @@ class CommentsListCreateView(ListCreateAPIView):
         """
         Method for getting all comments
         """
-        article = ArticlesModel.objects.get(slug=slug)
+        article = get_article(slug=slug)
+        if isinstance(article, dict):
+            return Response(article, status=status.HTTP_404_NOT_FOUND)
         comments = article.comments.filter(parent=None)
         serializer = self.serializer_class(comments.all(), many=True)
         data = {
@@ -97,23 +113,12 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIV
     serializer_class = CommentsSerializers
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
 
-    def get_article(self, slug):
-        """
-        This method returns article for further reference made to article slug
-        """
-        article = ArticlesModel.objects.filter(slug=slug)
-        if not article:
-            message = {'message': 'Article slug is not valid.'}
-            return message
-        # queryset always has 1 thing as long as it is unique
-        return article[0]
-    
     def create(self, request, slug, id):
         """Create a child comment on a parent comment."""
         context = super(CommentsRetrieveUpdateDestroy,
                         self).get_serializer_context()
         
-        article = self.get_article(slug)
+        article = get_article(slug)
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
         parent = article.comments.filter(id=id).first().pk
@@ -139,7 +144,7 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIV
         """
         Method for deleting a comment
         """
-        article = self.get_article(slug)
+        article = get_article(slug)
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
 
@@ -155,18 +160,24 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIV
         """
         Method for editing a comment
         """
-        article = self.get_article(slug)
+        article = get_article(slug)
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
 
-        comment = article.comments.get(id=id)
+        comment = article.comments.filter(id=id).first()
         if not comment:
             message = {'detail': 'Comment not found.'}
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         
-        new_comment = request.data.get('comment',{})
-        serializer = self.serializer_class(comment, data=new_comment, partial=True)
+        new_comment = request.data.get('comment',{}).get('body', None)
+        data = {
+            'body': new_comment,
+            'article': article.pk,
+            'author': request.user.id
+        }
+        serializer = self.serializer_class(comment, data=data, partial=True)
+        
         serializer.is_valid(raise_exception=True)
-        serializer.save(article=article, author=request.user)
+        serializer.save()
         return Response(serializer.data)
     
