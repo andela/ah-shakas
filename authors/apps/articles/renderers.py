@@ -13,7 +13,10 @@ class ArticlesRenderer(renderers.BaseRenderer):
         if isinstance(data, list):
             # converts it into a dictionary with a key
             return json.dumps(
-                {'articles': data}
+                {
+                    'status': 'success',
+                    'articles': data
+                }
             )
         else:
             # checks if the data received is an error message
