@@ -1,6 +1,7 @@
 from django.db import models
-from authors.apps.authentication.models import User
 from django.utils.text import slugify
+
+from authors.apps.authentication.models import User
 
 
 class ArticlesModel(models.Model):
