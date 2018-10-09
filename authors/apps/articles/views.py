@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,7 +8,8 @@ from .models import ArticlesModel
 from .serializers import ArticlesSerializers
 from .renderers import ArticlesRenderer
 
-class ArticlesList(generics.ListCreateAPIView):
+
+class ArticlesList(ListCreateAPIView):
     queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers
     permission_classes = (IsAuthenticatedOrReadOnly,)
@@ -23,7 +24,7 @@ class ArticlesList(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class ArticlesDetails(generics.RetrieveUpdateDestroyAPIView):
+class ArticlesDetails(RetrieveUpdateDestroyAPIView):
     queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers
     renderer_classes = (ArticlesRenderer,)
