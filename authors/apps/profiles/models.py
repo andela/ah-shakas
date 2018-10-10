@@ -7,16 +7,16 @@ from authors import settings
 
 # Create your models here.
 class Profile(models.Model):
+    """
+    This class cretes the user profile model
+    """
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bio = models.TextField(max_length=255, default='Update your bio')
     image_url = models.URLField(max_length=250, default="image-url", null=True)
     following = models.BooleanField(default=False)
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_profile(sender, instance, created, **kwargs):
+def create_save_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def save_profile(sender, instance, **kwargs):
-    instance.profile.save()
+        instance.profile.save()
