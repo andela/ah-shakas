@@ -1,4 +1,5 @@
 from django.db import models
+from authors.apps.core.models import TimeStampedModel
 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -6,7 +7,7 @@ from django.dispatch import receiver
 from authors import settings
 
 # Create your models here.
-class Profile(models.Model):
+class Profile(TimeStampedModel):
     """
     This class cretes the user profile model
     """
