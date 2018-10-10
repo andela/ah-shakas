@@ -39,4 +39,4 @@ class ProfileSerializer(serializers.ModelSerializer):
    
     class Meta:
         model = Profile
-        fields = ('username', 'bio', 'image_url', 'following')
+        fields = ('username', 'bio', 'image_url', 'following', 'created_at', 'updated_at')
