@@ -68,14 +68,16 @@ class CommentsSerializers(serializers.ModelSerializer):
        overide representation for custom output
        """
        threads = [
-           {
+                    {
 
-               'id': thread.id,
-                'body': thread.body,
-                'author': thread.author.username,
-                'created_at': self.format_date(thread.created_at),
-                'replies': thread.threads.count(),
-                'updated_at': self.format_date(thread.updated_at)}  for thread in instance.threads.all()]
+                    'id': thread.id,
+                        'body': thread.body,
+                        'author': thread.author.username,
+                        'created_at': self.format_date(thread.created_at),
+                        'replies': thread.threads.count(),
+                        'updated_at': self.format_date(thread.updated_at)
+                    }  for thread in instance.threads.all()
+                ]
     
        representation = super(CommentsSerializers, self).to_representation(instance)
        representation['created_at'] = self.format_date(instance.created_at)

@@ -90,7 +90,7 @@ class CommentsListCreateView(ListCreateAPIView):
         article = get_article(slug=slug)
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
-        comments = article.comments.filter(parent=None)
+        comments = article.comments.filter()
         serializer = self.serializer_class(comments.all(), many=True)
         data = {
             'count': comments.count(),
@@ -104,7 +104,6 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIV
     Class for retrieving, updating and deleting a comment
     """
     queryset = Comment.objects.all()
-    lookup_field = 'id'
     lookup_url_kwarg = 'id'
     serializer_class = CommentsSerializers
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
