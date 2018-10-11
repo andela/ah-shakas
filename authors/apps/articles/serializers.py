@@ -3,8 +3,13 @@ from .models import ArticlesModel
 from authors.apps.authentication.serializers import UserSerializer
 from authors.apps.articles.helpers import get_time_to_read_article
 
-class ArticlesSerializers(serializers.ModelSerializer):
 
+from authors.apps.profiles.models import Profile
+from .models import ArticlesModel
+from authors.apps.profiles.serializers import ProfileSerializer
+
+
+class ArticlesSerializers(serializers.ModelSerializer):
     title = serializers.CharField(
         required=True,
         max_length=128,
@@ -43,6 +48,13 @@ class ArticlesSerializers(serializers.ModelSerializer):
        representation['time_to_read'] = get_time_to_read_article(instance)
        return representation
     
+    author = serializers.SerializerMethodField(read_only=True)
+
+    def get_author(self, obj):
+        """This method gets the profile object for the article"""
+        serializer = ProfileSerializer(instance=Profile.objects.get(user=obj.author))
+        return serializer.data
+
     class Meta:
         model = ArticlesModel
         fields = (

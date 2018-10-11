@@ -38,6 +38,7 @@ class ArticlesDetails(RetrieveUpdateDestroyAPIView):
         data = request.data.get('article', {})
         serializer = self.serializer_class(article, data=data, partial=True)
         if serializer.is_valid():
+            self.check_object_permissions(request, article)
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

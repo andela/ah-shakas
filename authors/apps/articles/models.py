@@ -3,6 +3,9 @@ from authors.apps.authentication.models import User
 from django.utils.text import slugify
 
 
+from authors.apps.authentication.models import User
+
+
 class ArticlesModel(models.Model):
     """ This class defines the model for creating articles"""
     slug = models.SlugField(db_index=True, max_length=128, unique=True, blank=True)
