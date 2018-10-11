@@ -1,11 +1,12 @@
 from rest_framework import serializers
-from .models import ArticlesModel
+from django.core.validators import MinValueValidator, MaxValueValidator
 
+from authors import settings
 from authors.apps.authentication.serializers import UserSerializer
 from authors.apps.articles.helpers import get_time_to_read_article
 from authors.apps.profiles.models import Profile
 from authors.apps.profiles.serializers import ProfileSerializer
-from .models import ArticlesModel, Comment
+from .models import ArticlesModel, Comment, Rating
 
 class ArticlesSerializers(serializers.ModelSerializer):
     title = serializers.CharField(
@@ -104,3 +105,25 @@ class CommentsSerializers(serializers.ModelSerializer):
     class Meta:
        model = Comment
        fields = ('id', 'body', 'created_at', 'updated_at', 'author', 'article', 'parent') 
+        
+class RatingSerializer(serializers.ModelSerializer):
+    rating = serializers.FloatField(
+        required=True,
+        validators=[
+            MinValueValidator(
+                settings.RATING_MIN,
+                message='Rating cannot be less than ' + str(settings.RATING_MIN)
+            ),
+            MaxValueValidator(
+                settings.RATING_MAX,
+                message='Rating cannot be more than ' + str(settings.RATING_MAX)
+            )
+        ],
+        error_messages={
+            'required': 'The rating is required'
+        }
+    )
+
+    class Meta:
+        model = Rating
+        fields = ('article', 'user', 'rating')
