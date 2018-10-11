@@ -11,6 +11,7 @@ services:
 
 install:
   - pip install pipenv
+  - pip install coveralls
   - pipenv install
 
 
