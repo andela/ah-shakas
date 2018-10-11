@@ -8,11 +8,6 @@ from .models import ArticlesModel, Comment
 from .serializers import ArticlesSerializers, CommentsSerializers
 
 
-from .permissions import IsOwnerOrReadonly
-from .models import ArticlesModel, Comment
-from .serializers import ArticlesSerializers, CommentsSerializers
-
-
 class ArticlesList(ListCreateAPIView):
     queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers

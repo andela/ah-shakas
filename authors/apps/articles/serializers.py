@@ -70,7 +70,7 @@ class CommentsSerializers(serializers.ModelSerializer):
 
     def to_representation(self,instance):
        """
-       overide representatiom for custom output
+       overide representation for custom output
        """
        threads = [
            {
