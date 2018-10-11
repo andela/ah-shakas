@@ -5,14 +5,16 @@ from rest_framework.serializers import ValidationError
 from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework import status
+from django.http import Http404
 
 from authors.apps.authentication.models import User
 from .models import Profile
-from .renderers import ProfileJSONRenderer
-from .serializers import ProfileSerializer
+from .renderers import ProfileJSONRenderer, ProfilesJSONRenderer
+from .serializers import ProfileSerializer, ProfileListSerializer
 from authors.apps.authentication.serializers import UserSerializer
+
 
 # Create your views here.
 
@@ -38,10 +40,10 @@ class ProfileAPIView(APIView):
             return Response(
                 {
                     'message': 'Profile not found'
-                }, 
+                },
                 status=status.HTTP_404_NOT_FOUND
             )
-    
+
     def put(self, request, username, format=None):
         try:
             serializer_data = request.data.get('user', {})
@@ -59,7 +61,7 @@ class ProfileAPIView(APIView):
 
 
 class FollowCreate(CreateAPIView):
-    
+
     permission_classes = (IsAuthenticated,)
     serializer_class = ProfileSerializer
 
@@ -111,7 +113,7 @@ class FollowCreate(CreateAPIView):
         return Response(data=serialize.data, status=status.HTTP_200_OK)
 
 class Following(generics.RetrieveAPIView):
-    """ 
+    """
     Get all the users a user follows
     """
     permission_classes = (IsAuthenticated,)
@@ -130,7 +132,7 @@ class Following(generics.RetrieveAPIView):
 
 
 class FollowedBy(generics.RetrieveAPIView):
-    """ 
+    """
     Get all the users who follow a user
     """
     permission_classes = (IsAuthenticated,)
@@ -147,4 +149,23 @@ class FollowedBy(generics.RetrieveAPIView):
         serializer = self.serializer_class(follower, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    
+
+class ProfileListAPIView(ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    renderer_classes = (ProfilesJSONRenderer,)
+
+    def get(self, request):
+        """
+        List of profiles for other users
+        """
+        try:
+            queryset = Profile.objects.all().exclude(user=request.user)
+        except Profile.DoesNotExist:
+            return Response(
+                    {
+                        'message': 'Profile not found'
+                    },
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        serializer = ProfileListSerializer(queryset, many=True)
+        return Response({'profiles': serializer.data}, status=status.HTTP_200_OK)
