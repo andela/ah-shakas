@@ -26,4 +26,3 @@ urlpatterns = [
     path(r'', schema_view),
     path('api/', include(('authors.apps.profiles.urls', 'profiles'), namespace='profiles')),
 ]
-
