@@ -6,9 +6,6 @@ python:
 addons:
   postgresql: "9.6"
 
-addons:
-  postgresql: "9.6"
-
 services:
   - postgresql       
 
