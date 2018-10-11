@@ -8,8 +8,7 @@ class IsOwnerOrReadonly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        # We check if is owner if either user or author are 
-        # related to the requqesst user.
+        # We check if the user or the author is the request user
         # Note: use of getattr to avoid AttributeError
         return request.user in [
             getattr(obj, 'user', None),
