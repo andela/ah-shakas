@@ -52,11 +52,6 @@ class ArticlesSerializers(serializers.ModelSerializer):
             'updated_at'
         )
 
-
-            'createdAt',
-            'updatedAt')
-
-
 class CommentsSerializers(serializers.ModelSerializer):
     body = serializers.CharField(
        max_length = 200,

@@ -6,6 +6,7 @@ from rest_framework import status
 from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel, Comment
 from .serializers import ArticlesSerializers, CommentsSerializers
+from .renderers import ArticlesRenderer
 
 
 class ArticlesList(ListCreateAPIView):
