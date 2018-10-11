@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.reverse import reverse as api_reverse
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+import json
 from .models import User
 from .password_token import generate_password_token
 
@@ -49,6 +50,15 @@ class TestEmailSent(APITestCase):
         response = self.client.post(self.url, data={"email":""})
         self.assertEqual(response.content, b'{"user": {"email": ["This field may not be blank."]}}')
         self.assertEqual(response.status_code, 400)
+
+    def test_invalid_email(self):
+       """
+       case where user provides invalid email
+       """
+       response =  self.client.post(self.url, data={"email":"kevkoech"})
+       response_body = json.loads(response.content)['user']['email']
+       self.assertEqual(response.status_code, 400)
+       self.assertEqual(response_body[0], "Enter a valid email address.")
 
     def test_successful_email(self):
         """
@@ -121,8 +131,10 @@ class TestPasswordReset(APITestCase):
         data = {"password":"Kev123"}
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.content,
-         b'{"user": {"password": ["Password must have at least 8 characters", "Password must have a number and a letter"]}}')
+        self.assertIn(
+            b'"Password must have at least 8 characters", "Password must have a number and a letter"',
+        response.content
+         )
 
     def test_login_new_password(self):
         """
