@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 
 
 
-    'articles',
+    'authors.apps.articles',
     'rest_framework_swagger',
     'social_django',
 ]
