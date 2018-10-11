@@ -3,7 +3,7 @@ language: python
 python:
   - "3.6"
 addon:
-  - postresql: "9.6"
+  postresql: "9.6"
 
 services:
   - postgresql       
