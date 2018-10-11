@@ -2,6 +2,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 
 from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel
@@ -9,12 +10,9 @@ from .serializers import ArticlesSerializers
 from .renderers import ArticlesRenderer
 
 
-from .permissions import IsOwnerOrReadonly
-from .models import ArticlesModel
-from .serializers import ArticlesSerializers
-from .renderers import ArticlesRenderer
-
-class ArticlesList(generics.ListCreateAPIView):
+class ArticlesList(ListCreateAPIView):
+    queryset = ArticlesModel.objects.all()
+    serializer_class = ArticlesSerializers
     permission_classes = (IsAuthenticatedOrReadOnly,)
     renderer_classes = (ArticlesRenderer,)
 
@@ -23,6 +21,7 @@ class ArticlesList(generics.ListCreateAPIView):
         serializer = self.serializer_class(data=article)
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
