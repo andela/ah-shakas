@@ -14,7 +14,21 @@ class Profile(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bio = models.TextField(max_length=255, default='Update your bio')
     image_url = models.URLField(max_length=250, default="image-url", null=True)
-    following = models.BooleanField(default=False)
+    isfollowing= models.ManyToManyField('self', related_name='is_following',symmetrical=False)
+    def __str__(self):
+        return self.user.username
+
+    def follow(self, profile):
+        self.isfollowing.add(profile)
+
+    def unfollow(self, profile):
+        self.isfollowing.remove(profile)
+
+    def followers(self, profile):
+        return profile.is_following.all()
+
+    def following(self, profile):
+        return profile.isfollowing.all()
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_save_profile(sender, instance, created, **kwargs):
