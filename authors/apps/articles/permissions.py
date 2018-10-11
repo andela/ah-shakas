@@ -7,4 +7,11 @@ class IsOwnerOrReadonly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
-        return obj.author == request.user
+
+        # We check if is owner if either user or author are 
+        # related to the requqesst user.
+        # Note: use of getattr to avoid AttributeError
+        return request.user in [
+            getattr(obj, 'user', None),
+            getattr(obj, 'author', None), 
+        ]
