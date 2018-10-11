@@ -80,7 +80,4 @@ class ArticleTests(ArticlesBaseTest):
         """This method tests whether the API returns time it takes to read an article"""
         token = self.create_user()
         response = self.client.post(self.url, self.article, format="json", HTTP_AUTHORIZATION=token)
-        self.assertIn("time_to_read", json.dumps(response.data))    
-        url = self.single_article_details()
-        response = self.client.delete(url, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn("time_to_read", json.dumps(response.data))
