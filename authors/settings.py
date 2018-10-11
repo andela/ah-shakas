@@ -46,8 +46,6 @@ INSTALLED_APPS = [
     'authors.apps.core',
     'authors.apps.profiles',
 
-
-
     'authors.apps.articles',
     'rest_framework_swagger',
     'social_django',
@@ -189,8 +187,6 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS={'fields':'id,email,name'}
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("GOOGLE_KEY")
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("GOOGLE_SECRET")
-
-
 
 # Activate django-heroku for Heroku
 django_heroku.settings(locals())
