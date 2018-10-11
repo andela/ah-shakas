@@ -1,10 +1,11 @@
 from rest_framework import serializers
+
+from authors.apps.profiles.models import Profile
 from .models import ArticlesModel
-from authors.apps.authentication.serializers import UserSerializer
+from authors.apps.profiles.serializers import ProfileSerializer
 
 
 class ArticlesSerializers(serializers.ModelSerializer):
-
     title = serializers.CharField(
         required=True,
         max_length=128,
@@ -31,9 +32,12 @@ class ArticlesSerializers(serializers.ModelSerializer):
         required=False
     )
 
-    author = UserSerializer(
-        read_only=True
-    )
+    author = serializers.SerializerMethodField(read_only=True)
+
+    def get_author(self, obj):
+        """This method gets the profile object for the article"""
+        serializer = ProfileSerializer(instance=Profile.objects.get(user=obj.author))
+        return serializer.data
 
     class Meta:
         model = ArticlesModel
@@ -47,4 +51,5 @@ class ArticlesSerializers(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         )
+
 
