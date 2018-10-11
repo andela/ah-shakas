@@ -3,6 +3,7 @@ from rest_framework import status
 import json
 
 from authors.apps.articles.tests.base_tests import ArticlesBaseTest
+from authors.apps.articles.helpers import get_time_to_read_article
 
 
 class ArticleTests(ArticlesBaseTest):
