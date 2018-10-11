@@ -1,9 +1,9 @@
 import re
 from math import ceil
 
-def get_time_to_read_article(article, wpm=250):
+def get_time_to_read_article(article, words_per_minute=250):
     '''
-    wpm is words per minute, article is an instance of ArticleModels classs
+    This function returns the time it takes to read an article
     '''
     body = article.body
     word_count = len(re.sub('[^A-Za-z0-9]+', ' ', body).split())

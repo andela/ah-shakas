@@ -71,7 +71,7 @@ class ArticleTests(ArticlesBaseTest):
         self.assertIn("Article Deleted Successfully", json.dumps(r.data))
 
     def test_unauthorised_user_delete(self):
-        """This metho tests if a non owner can delete an article"""
+        """This method tests if a non owner can delete an article"""
         url = self.single_article_details()
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
