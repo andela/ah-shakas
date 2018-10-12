@@ -41,14 +41,14 @@ class TestEmailSent(APITestCase):
         """
         response = self.client.post(self.url, data={})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.content, b'{"user": {"email": ["Enter a valid email address."]}}')
+        self.assertEqual(response.content, b'{"errors":{"email":["Enter a valid email address."]}}')
 
     def test_empty_email(self):
         """
         case where a user provides empty email field
         """
         response = self.client.post(self.url, data={"email":""})
-        self.assertEqual(response.content, b'{"user": {"email": ["This field may not be blank."]}}')
+        self.assertEqual(response.content, b'{"errors":{"email":["This field may not be blank."]}}')
         self.assertEqual(response.status_code, 400)
 
     def test_invalid_email(self):
@@ -56,7 +56,7 @@ class TestEmailSent(APITestCase):
        case where user provides invalid email
        """
        response =  self.client.post(self.url, data={"email":"kevkoech"})
-       response_body = json.loads(response.content)['user']['email']
+       response_body = json.loads(response.content)['errors']['email']
        self.assertEqual(response.status_code, 400)
        self.assertEqual(response_body[0], "Enter a valid email address.")
 
@@ -132,7 +132,7 @@ class TestPasswordReset(APITestCase):
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
-            b'"Password must have at least 8 characters", "Password must have a number and a letter"',
+            b'"Password must have at least 8 characters","Password must have a number and a letter"',
         response.content
          )
 
@@ -167,5 +167,5 @@ class TestPasswordReset(APITestCase):
         self.client.put(self.url, data=data)
         response = self.client.post(login_url, login_data, format='json')
         self.assertEqual(response.content,
-        b'{"user": {"non_field_errors": ["A user with this email and password was not found."]}}')
+        b'{"errors":{"error":["A user with this email and password was not found."]}}')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
