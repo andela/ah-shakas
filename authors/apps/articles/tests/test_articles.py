@@ -2,11 +2,13 @@ from rest_framework.reverse import reverse as API_Reverse
 from rest_framework import status
 import json
 
-from authors.apps.articles.tests.base_tests import ArticlesBaseTest
 from authors.apps.articles.helpers import get_time_to_read_article
+from authors.apps.articles.tests.base_tests import BaseTest
+from authors.apps.articles.models import ArticlesModel
 
 
-class ArticleTests(ArticlesBaseTest):
+class ArticleTests(BaseTest):    
+
   
     def test_anyone_can_get_articles(self):
         """This method tests is anyone can access articles endpoint"""
@@ -57,6 +59,7 @@ class ArticleTests(ArticlesBaseTest):
     def test_unauthorised_user_update(self):
         """This method tests if unauthorized user can update existing articles"""
         url = self.single_article_details()
+        self.client.credentials(HTTP_AUTHORIZATION=None)
         r = self.client.put(url, data={"article": {"title": "Updated Title", "body": "Updated body"}}, format='json')
         self.assertEqual(r.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -73,6 +76,7 @@ class ArticleTests(ArticlesBaseTest):
     def test_unauthorised_user_delete(self):
         """This method tests if a non owner can delete an article"""
         url = self.single_article_details()
+        self.client.credentials(HTTP_AUTHORIZATION=None)
         response = self.client.delete(url, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
