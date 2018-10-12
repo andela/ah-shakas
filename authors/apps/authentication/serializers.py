@@ -215,3 +215,11 @@ class PasswordResetSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('email', 'password')
+
+class SocialSignUpSerializer(serializers.Serializer):
+    """
+    
+    Jsonify and validate tokens from social login
+    """
+    provider = serializers.CharField(max_length=255,required=True)
+    access_token = serializers.CharField(max_length=1024, required=True,trim_whitespace=True)
