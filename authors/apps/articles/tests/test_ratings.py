@@ -5,9 +5,9 @@ from rest_framework.reverse import reverse as api_reverse
 from rest_framework import status
 
 from authors import settings
+from .base_tests import ArticlesBaseTest
 
-
-class RatingsTest(APITestCase):
+class RatingsTest(ArticlesBaseTest):
     """
     Tests rating of an article
     """
@@ -15,21 +15,8 @@ class RatingsTest(APITestCase):
         """
         Setup the user, rating and article for the tests
         """
-        self.rating =  {'rating' :{'rating': 4}}
-        self.user = {
-            'user': {
-                'username': 'janeDoe',
-                'email': 'jane@doe.com', 
-                'password': 'secret123'
-            }
-        }
-        self.article = {
-            "article": {
-                "title": "test article",
-                "description": "This is test description",
-                "body": "This is a test body"
-            }
-        }
+        super().setUp()
+        self.rating =  {'rating': {'rating': 4}}
 
     def create_user(self, user=None):
         """Creates a user and return their authenticated token"""
