@@ -37,7 +37,8 @@ class BaseTest(APITestCase):
             "article": {
                 "title": "test article",
                 "description": "This is test description",
-                "body": "This is a test body"
+                "body": "This is a test body",
+                "tags": ["test", "tags"]
             }
         }
 
