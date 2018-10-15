@@ -171,3 +171,17 @@ class RatingsTest(BaseTest):
         self.assertIn(b'rating', resp.content)
         self.assertIn(b'5', resp.content)
         
+    def test_user_can_delete_an_article(self):
+        """A user can delete their own rating on an article"""
+        self.create_article_rating()
+        resp = self.client.delete(
+            self.article_rating_url, 
+            HTTP_AUTHORIZATION=self.rater_token
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertIn(b'Successfully deleted rating', resp.content)
+
+        # Getting a deleted rating returns the default rating only
+        resp = self.client.get(self.article_rating_url)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertNotIn(b'\'rating\'', resp.content)

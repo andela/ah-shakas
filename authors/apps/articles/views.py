@@ -93,11 +93,15 @@ class RatingDetails(GenericAPIView):
         if isinstance(article, dict):
             raise ValidationError(detail={'artcle': 'No article found for the slug given'})
 
-        # If the user is authenticated, return their rating as well, if not
-        # return the default rating average...
+        # If the user is authenticated, return their rating as well, if not or
+        # the user has not rated the article return the rating average...
         if request.user.is_authenticated:
-            rating = self.get_rating(article=article.id, user=request.user.id)
-        else:
+            try:
+                rating = Rating.objects.get(user=request.user, article=article)
+            except Rating.DoesNotExist:
+                rating = None
+
+        if not rating:
             rating = Rating.objects.first()
 
         serializer = self.serializer_class(rating)
@@ -151,6 +155,23 @@ class RatingDetails(GenericAPIView):
 
         return Response(serializer.data)
       
+    def delete(self, request, slug):
+        """
+        Deletes a rating
+        """
+        article = get_article(slug) 
+        if isinstance(article, dict):
+            raise ValidationError(detail={'artcle': 'No article found for the slug given'})
+
+        rating = self.get_rating(user=request.user, article=article)
+        rating.delete()
+
+        return Response(
+            {'message': 'Successfully deleted rating'}, 
+            status=status.HTTP_200_OK
+        )
+
+
 def get_article(slug):
         """
         This method returns article for further reference made to article slug
