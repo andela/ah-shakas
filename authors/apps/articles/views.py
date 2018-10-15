@@ -1,4 +1,3 @@
-
 from rest_framework.generics import (ListCreateAPIView, 
         RetrieveUpdateDestroyAPIView, GenericAPIView)
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -31,12 +30,15 @@ class ArticlesList(ListCreateAPIView):
 
     def post(self, request):
         article = request.data.get('article', {})
-        serializer = self.serializer_class(data=article)
+        serializer = self.serializer_class(
+            data=article, 
+            context={'request': request}
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+    
 
 class ArticlesDetails(RetrieveUpdateDestroyAPIView, ):
     queryset = ArticlesModel.objects.all()
@@ -49,7 +51,12 @@ class ArticlesDetails(RetrieveUpdateDestroyAPIView, ):
         """This method overwrites the """
         article = ArticlesModel.objects.get(slug=slug)
         data = request.data.get('article', {})
-        serializer = self.serializer_class(article, data=data, partial=True)
+        serializer = self.serializer_class(
+            article, 
+            data=data, 
+            partial=True, 
+            context={'request': request}
+        )
         if serializer.is_valid():
             self.check_object_permissions(request, article)
             serializer.save()
@@ -61,6 +68,101 @@ class ArticlesDetails(RetrieveUpdateDestroyAPIView, ):
         super().delete(self, request, slug)
         return Response({"message": "Article Deleted Successfully"})
 
+
+class RatingDetails(GenericAPIView):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
+    renderer_classes = (RatingJSONRenderer,)
+
+    def get_rating(self, user, article):
+        """
+        Returns a rating given the user id and the article id
+        """
+        try:
+            return Rating.objects.get(user=user, article=article)
+        except Rating.DoesNotExist:
+            raise NotFound(detail={'rating': 'Rating not found'})
+
+    def get(self, request, slug):
+        """
+        Returns the authenticated user's rating on an article given
+        its slug.
+        """
+        article = get_article(slug) 
+        if isinstance(article, dict):
+            raise ValidationError(detail={'artcle': 'No article found for the slug given'})
+
+        # If the user is authenticated, return their rating as well, if not
+        # return the default rating average...
+        if request.user.is_authenticated:
+            rating = self.get_rating(article=article.id, user=request.user.id)
+        else:
+            rating = Rating.objects.first()
+
+        serializer = self.serializer_class(rating)
+        return Response(serializer.data)
+
+    def post(self, request, slug):
+        """
+        This will create a rating by user on an article. We also check 
+        if the user has rated this article before and if that is the case,
+        we just update the existing rating.
+        """
+        article = get_article(slug) 
+        if isinstance(article, dict):
+            raise ValidationError(detail={'artcle': 'No article found for the slug given'})
+        rating = request.data.get('rating', {})
+        rating.update({
+            'user': request.user.pk,
+            'article': article.pk
+        })
+        # ensure a user cannot rate their own articles
+        if article.author == request.user:
+            raise ValidationError(detail={'author': 'You cannot rate your own article'})
+        # users current rating exists?
+        try:
+            # if the rating exists, we update it
+            current_rating = Rating.objects.get(
+                user=request.user.id, 
+                article=article.id
+            )
+            serializer = self.serializer_class(current_rating, data=rating)
+        except Rating.DoesNotExist:
+            # if it doesn't, create a new one
+            serializer = self.serializer_class(data=rating)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user, article=article)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def put(self, request, slug):
+        """
+        Gets an existing rating and updates it
+        """
+        rating = request.data.get('rating', {})
+        article = get_article(slug) 
+        if isinstance(article, dict):
+            raise ValidationError(detail={'artcle': 'No article found for the slug given'})
+        current_rating = self.get_rating(user=request.user.id, article=article.id)
+        serializer = self.serializer_class(current_rating, data=rating, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(user=request.user, article=article)
+
+        return Response(serializer.data)
+      
+def get_article(slug):
+        """
+        This method returns article for further reference made to article slug
+        """
+        article = ArticlesModel.objects.filter(slug=slug).first()
+        if not article:
+            message = {'message': 'Article slug is not valid.'}
+            return message
+        # queryset always has 1 thing as long as it is unique
+        return article
+    
+    
 class CommentsListCreateView(ListCreateAPIView):
     """
     Class for creating and listing all comments

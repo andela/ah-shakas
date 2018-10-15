@@ -41,6 +41,7 @@ class ArticlesRenderer(renderers.BaseRenderer):
                     }
                 )
 
+
 class RatingJSONRenderer(JSONRenderer):
     charset = 'utf-8'
 
@@ -51,13 +52,8 @@ class RatingJSONRenderer(JSONRenderer):
             if not code in [status.HTTP_200_OK, status.HTTP_201_CREATED]:
                 return super(RatingJSONRenderer, self).render(data)
 
-        # rating rendering...
-        article = ArticlesModel.objects.get(pk=data.get('article'))
-        average = Rating.objects.filter(article=article.id).aggregate(Avg('rating'))
+        if not renderer_context['request'].user.is_authenticated:
+            del data['rating']
         return json.dumps({
-            'rating': {
-                'rating': data.get('rating'),
-                'avg_rating': average.get('rating__avg'),
-                'article': article.slug
-            }
+            'rating': data
         })

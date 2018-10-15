@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db.models import Avg
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 from authors import settings
@@ -6,8 +7,12 @@ from authors.apps.authentication.serializers import UserSerializer
 from authors.apps.articles.helpers import get_time_to_read_article
 from authors.apps.profiles.models import Profile
 from authors.apps.profiles.serializers import ProfileSerializer
-from .models import ArticlesModel, Comment, Rating
 
+<<<<<<< HEAD
+=======
+from .models import ArticlesModel, Rating, Comment
+
+>>>>>>> [Feature #160577480] Add ratings to article views
 class ArticlesSerializers(serializers.ModelSerializer):
     title = serializers.CharField(
         required=True,
@@ -36,12 +41,14 @@ class ArticlesSerializers(serializers.ModelSerializer):
     )
 
     author = serializers.SerializerMethodField(read_only=True)
+    rating = serializers.SerializerMethodField()
 
     def get_author(self, obj):
         """This method gets the profile object for the article"""
         serializer = ProfileSerializer(instance=Profile.objects.get(user=obj.author))
         return serializer.data
 
+<<<<<<< HEAD
     def to_representation(self,instance):
        """
        overide representatiom for custom output
@@ -50,6 +57,32 @@ class ArticlesSerializers(serializers.ModelSerializer):
        representation['time_to_read'] = get_time_to_read_article(instance)
        return representation
     
+=======
+    def get_rating(self, obj):
+        """This method gets and returns the rating for the article"""
+
+        # Get average rating
+        avg_rating = Rating.objects.filter(article=obj.id).aggregate(Avg('rating'))
+
+        # Check that this user is authenticated in order to include their rating,
+        # if not, we return the default rating 
+        user = self.context['request'].user
+        if user.is_authenticated:
+            try:
+                rating = Rating.objects.get(user=user, article=obj.id).rating
+            except Rating.DoesNotExist:
+                rating = None
+
+            return {
+                'avg_rating': avg_rating['rating__avg'],
+                'rating': rating
+            }
+
+        return {
+            'avg_rating': avg_rating['rating__avg']
+        }
+
+>>>>>>> [Feature #160577480] Add ratings to article views
     class Meta:
         model = ArticlesModel
         fields = (
@@ -59,6 +92,7 @@ class ArticlesSerializers(serializers.ModelSerializer):
             'slug',
             'image_url',
             'author',
+            'rating',
             'created_at',
             'updated_at'
         )
@@ -106,6 +140,7 @@ class CommentsSerializers(serializers.ModelSerializer):
        model = Comment
        fields = ('id', 'body', 'created_at', 'updated_at', 'author', 'article', 'parent') 
         
+
 class RatingSerializer(serializers.ModelSerializer):
     rating = serializers.FloatField(
         required=True,
@@ -124,6 +159,20 @@ class RatingSerializer(serializers.ModelSerializer):
         }
     )
 
+    avg_rating = serializers.SerializerMethodField()
+
+    def get_avg_rating(self, obj):
+        avg = Rating.objects.filter(article=obj.article.id).aggregate(Avg('rating'))
+        return avg['rating__avg']
+
+    def get_article(self, obj):
+        return obj.article.slug
+
+    def get_rating(self, obj):
+        if self.context['request'].user.is_authenticated:
+            return obj
+        return None
+
     class Meta:
         model = Rating
-        fields = ('article', 'user', 'rating')
+        fields = ('article', 'rating', 'avg_rating')
