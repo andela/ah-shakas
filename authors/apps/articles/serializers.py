@@ -160,6 +160,7 @@ class RatingSerializer(serializers.ModelSerializer):
     )
 
     avg_rating = serializers.SerializerMethodField()
+    article = serializers.SerializerMethodField()
 
     def get_avg_rating(self, obj):
         avg = Rating.objects.filter(article=obj.article.id).aggregate(Avg('rating'))

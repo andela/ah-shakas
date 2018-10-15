@@ -95,12 +95,12 @@ class RatingDetails(GenericAPIView):
 
         # If the user is authenticated, return their rating as well, if not or
         # the user has not rated the article return the rating average...
+        rating = None
         if request.user.is_authenticated:
             try:
                 rating = Rating.objects.get(user=request.user, article=article)
             except Rating.DoesNotExist:
-                rating = None
-
+                pass
         if not rating:
             rating = Rating.objects.first()
 
