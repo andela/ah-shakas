@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'authors.apps.profiles',
 
     'authors.apps.articles',
+    'authors.apps.notifications',
     'rest_framework_swagger',
     'social_django',
 ]

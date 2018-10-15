@@ -13,6 +13,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from rest_framework.response import Response
 from django.contrib.auth.models import AnonymousUser
 from rest_framework import status
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
@@ -31,6 +33,10 @@ from .serializers import (ArticlesSerializers,
 from authors import settings
 from .renderers import ArticlesRenderer, RatingJSONRenderer, FavouriteJSONRenderer
 from .permissions import IsOwnerOrReadonly
+from .models import ArticlesModel
+from .serializers import ArticlesSerializers
+from .renderers import ArticlesRenderer
+from authors.apps.notifications.models import UserNotifications
 from .filters import ArticlesFilter
 
 
@@ -65,14 +71,29 @@ class ArticlesList(ListCreateAPIView):
     def post(self, request):
         article = request.data.get('article', {})
         serializer = self.serializer_class(
-            data=article, 
+            data=article,
             context={'request': request}
         )
         serializer.is_valid(raise_exception=True)
         serializer.save(author=request.user)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+@receiver(post_save, sender=ArticlesModel)
+# This receiver handles notification creation immediately a new article is created.
+def notification(sender, instance=None, created=None, **kwargs):
+    """
+    Sends notification
+    """
+    if created == True:
+        username = instance.author.username
+        # print(instance.author.username)
+        username = instance.author.username
+        title = instance
+        print(title)
+        notification = username + " created a new article"
+        UserNotifications.objects.get_or_create(article=instance, notification=notification,
+            author_id=instance.author.id, recipient_id=2)
+
 
 class ArticlesDetails(RetrieveUpdateDestroyAPIView):
     queryset = ArticlesModel.objects.all()
@@ -96,9 +117,9 @@ class ArticlesDetails(RetrieveUpdateDestroyAPIView):
         article = ArticlesModel.objects.get(slug=slug)
         data = request.data.get('article', {})
         serializer = self.serializer_class(
-            article, 
-            data=data, 
-            partial=True, 
+            article,
+            data=data,
+            partial=True,
             context={'request': request}
         )
         if serializer.is_valid():
@@ -157,7 +178,7 @@ class RatingDetails(GenericAPIView):
         Returns the authenticated user's rating on an article given
         its slug.
         """
-        article = get_article(slug) 
+        article = get_article(slug)
         if isinstance(article, dict):
             raise ValidationError(detail={'artcle': 'No article found for the slug given'})
 
@@ -177,11 +198,11 @@ class RatingDetails(GenericAPIView):
 
     def post(self, request, slug):
         """
-        This will create a rating by user on an article. We also check 
+        This will create a rating by user on an article. We also check
         if the user has rated this article before and if that is the case,
         we just update the existing rating.
         """
-        article = get_article(slug) 
+        article = get_article(slug)
         if isinstance(article, dict):
             raise ValidationError(detail={'artcle': 'No article found for the slug given'})
         rating = request.data.get('rating', {})
@@ -196,7 +217,7 @@ class RatingDetails(GenericAPIView):
         try:
             # if the rating exists, we update it
             current_rating = Rating.objects.get(
-                user=request.user.id, 
+                user=request.user.id,
                 article=article.id
             )
             serializer = self.serializer_class(current_rating, data=rating)
@@ -213,7 +234,7 @@ class RatingDetails(GenericAPIView):
         Gets an existing rating and updates it
         """
         rating = request.data.get('rating', {})
-        article = get_article(slug) 
+        article = get_article(slug)
         if isinstance(article, dict):
             raise ValidationError(detail={'artcle': 'No article found for the slug given'})
         current_rating = self.get_rating(user=request.user.id, article=article.id)
@@ -222,19 +243,19 @@ class RatingDetails(GenericAPIView):
         serializer.save(user=request.user, article=article)
 
         return Response(serializer.data)
-      
+
     def delete(self, request, slug):
         """
         Deletes a rating
         """
-        article = get_article(slug) 
+        article = get_article(slug)
         if isinstance(article, dict):
             raise ValidationError(detail={'artcle': 'No article found for the slug given'})
 
         rating = self.get_rating(user=request.user, article=article)
         rating.delete()
         return Response(
-            {'message': 'Successfully deleted rating'}, 
+            {'message': 'Successfully deleted rating'},
             status=status.HTTP_200_OK
         )
 
@@ -293,7 +314,7 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIV
         """Create a child comment on a parent comment."""
         context = super(CommentsRetrieveUpdateDestroy,
                         self).get_serializer_context()
-        
+
         article = get_article(slug)
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
@@ -302,20 +323,20 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIV
             message = {'detail': 'Comment not found.'}
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         body = request.data.get('comment', {}).get('body', {})
-        
+
         data = {
             'body': body,
             'parent': parent,
             'article': article.pk,
             'author': request.user.id
         }
-        
+
         serializer = self.serializer_class(
             data=data, context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
     def destroy(self, request, slug, id):
         """
         Method for deleting a comment
@@ -324,7 +345,7 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIV
         if isinstance(article, dict):
             return Response(article, status=status.HTTP_404_NOT_FOUND)
 
-        comment = article.comments.filter(id=id) 
+        comment = article.comments.filter(id=id)
         if not comment:
             message = {'detail': 'Comment not found.'}
             return Response(message, status=status.HTTP_404_NOT_FOUND)
@@ -357,13 +378,15 @@ class CommentsRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView, ListCreateAPIV
             history_serializer.is_valid(raise_exception=True)
             history_serializer.save()
 
+
+        new_comment = request.data.get('comment',{}).get('body', None)
         data = {
             'body': new_body,
             'article': article.pk,
             'author': request.user.id
         }
         serializer = self.serializer_class(comment, data=data, partial=True)
-        
+
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
