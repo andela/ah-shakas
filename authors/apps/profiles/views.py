@@ -74,7 +74,7 @@ class FollowCreate(CreateAPIView):
         try:
             followed_user = followed_profile(username)
         except Profile.DoesNotExist:
-            raise NotFound('You are trying to follow a user who in not there,please check the username again')
+            raise NotFound('You are trying to follow a user who in not there, please check the username again')
 
         # Check if user is same
         if following_user.id == followed_user.id:

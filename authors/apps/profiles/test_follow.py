@@ -1,11 +1,9 @@
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase
-from rest_framework.reverse import reverse
 from rest_framework import status
-from .models import Profile
-
-
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
 from authors.apps.authentication.models import UserManager
+from .models import Profile
 
 
 class ProfileTest(APITestCase):
@@ -18,22 +16,22 @@ class ProfileTest(APITestCase):
         """
         self.user =  { 
             "user":{
-                    'username': 'janeDoe', 
-                    'email': 'jane@doe.com', 
-                    'password': 'janedoe123', 
+                'username': 'janeDoe', 
+                'email': 'jane@doe.com', 
+                'password': 'janedoe123', 
             }
         }
 
         self.user_2 =  { 
             "user":{
-                    'username': 'jane1Doe', 
-                    'email': 'jane3@doe.com', 
-                    'password': 'jane3doe123', 
+                'username': 'jane1Doe', 
+                'email': 'jane3@doe.com', 
+                'password': 'jane3doe123', 
             }
         }
 
         self.url_register = reverse('authentication:user-registration')
-        reg_res=self.client.post(self.url_register,self.user_2,format='json')
+        self.client.post(self.url_register,self.user_2,format='json')
         
     
     def registration(self):
@@ -76,8 +74,6 @@ class ProfileTest(APITestCase):
         url=reverse("profiles:follow", kwargs={"username": self.user_2['user']['username']})
         response = self.client.post(url,data,format='json')
         self.assertEqual(response.status_code,201)
-
-    
 
     def test_follow_without_auth(self):
         data={}
