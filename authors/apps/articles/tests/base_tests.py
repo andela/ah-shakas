@@ -50,22 +50,25 @@ class BaseTest(APITestCase):
     def create_user(self):
         response = self.client.post(self.signup_url, self.user, format='json')
         return response
+
     def activate_user(self):
         """Activate user after login"""
         self.client.post(self.signup_url, self.user, format='json')
         user = self.user['user']
         token = generate_token(user['username'])
         self.client.get(reverse("authentication:verify", args=[token]))
+
     def login_user(self):
         """This will login an existing user"""
         response = self.client.post(self.login_url, self.user, format='json')
         token = response.data['token']
         return token
 
-    def create_article(self):
-        self.create_user()
-        self.activate_user()
-        token = self.login_user()
+    def create_article(self, token=None):
+        if not token:
+            self.create_user()
+            self.activate_user()
+            token = self.login_user()
         response = self.client.post(self.url, self.article, format='json', HTTP_AUTHORIZATION=token)
         self.client.credentials(HTTP_AUTHORIZATION=token)
         slug = response.data['slug']
