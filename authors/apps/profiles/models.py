@@ -14,6 +14,9 @@ class Profile(TimeStampedModel):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     bio = models.TextField(max_length=255, default='Update your bio')
     image_url = models.URLField(max_length=250, default="image-url", null=True)
+    # The related_name attribute specifies the name of the reverse relation from 
+    # the Profile model back to itself.
+    # symmetrical=False results in creating one row
     isfollowing= models.ManyToManyField('self', related_name='is_following',symmetrical=False)
     def __str__(self):
         return self.user.username

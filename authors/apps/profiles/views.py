@@ -70,13 +70,13 @@ class FollowCreate(CreateAPIView):
 
         following_user = current_profile(request)
 
-        # check if the user to be exists
+        # check if the user to be followed exists
         try:
             followed_user = followed_profile(username)
         except Profile.DoesNotExist:
             raise NotFound('You are trying to follow a user who in not there, please check the username again')
 
-        # Check if user is same
+        # Check if user is trying to follow himself
         if following_user.id == followed_user.id:
             raise ValidationError("You cannot follow yourself")
 
@@ -94,17 +94,17 @@ class FollowCreate(CreateAPIView):
 
         following_user = current_profile(request)
 
-        # check if the user to be exists
+        # check if the user to unfollowed be exists
         try:
             followed_user = followed_profile(username)
         except Profile.DoesNotExist:
             raise NotFound('You are trying to unfollow a user who in not there,please check the username again')
 
-        # Check if user is same
+        # Check if user trying to unfollow him/herself
         if following_user.id == followed_user.id:
             raise ValidationError("You cannot unfollow yourself")
 
-        # Add user
+        # unfollow user
         following_user.unfollow(followed_user)
 
         serialize = self.serializer_class(following_user, context={'request': request})
