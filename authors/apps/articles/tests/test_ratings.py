@@ -25,9 +25,9 @@ class RatingsTest(BaseTest):
                 "email": "rating@rater.com"
             }
         }
-        self.author_token = self.create_user()
-        self.article_slug = self.create_article(self.author_token)
-        self.rater_token = self.create_user(user=self.rater)
+        self.author_token = self.create_and_login_user()
+        self.article_slug = self.create_article(token=self.author_token)
+        self.rater_token = self.create_and_login_user(user=self.rater)
         self.article_rating_url = api_reverse(
             'articles:ratings', 
             {self.article_slug: 'slug'}
@@ -65,7 +65,6 @@ class RatingsTest(BaseTest):
             'json', 
             HTTP_AUTHORIZATION=self.rater_token
         )
-
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         self.assertIn(b'rating', resp.content)
 
@@ -171,13 +170,10 @@ class RatingsTest(BaseTest):
         self.assertIn(b'rating', resp.content)
         self.assertIn(b'5', resp.content)
         
-    def test_user_can_delete_an_article(self):
+    def test_user_can_delete_an_article_rating(self):
         """A user can delete their own rating on an article"""
         self.create_article_rating()
-        resp = self.client.delete(
-            self.article_rating_url, 
-            HTTP_AUTHORIZATION=self.rater_token
-        )
+        resp = self.client.delete(self.article_rating_url)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertIn(b'Successfully deleted rating', resp.content)
 
