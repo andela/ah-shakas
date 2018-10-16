@@ -87,6 +87,22 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Highlighted',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
+                ('comment', models.CharField(blank=True, max_length=200)),
+                ('snippet', models.TextField()),
+                ('index', models.IntegerField()),
+                ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_article', to='articles.ArticlesModel')),
+                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_user', to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'abstract': False,
+            },
+        ),
+        migrations.CreateModel(
             name='LikesDislikes',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
