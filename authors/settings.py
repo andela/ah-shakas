@@ -148,6 +148,7 @@ CORS_ORIGIN_WHITELIST = (
 # called `INSTALLED_APPS`.
 AUTH_USER_MODEL = 'authentication.User'
 
+DEFAULT_DOMAIN = 'https://ah-shakas.herokuapp.com'
 
 REST_FRAMEWORK = {
     'EXCEPTION_HANDLER': 'authors.apps.core.exceptions.core_exception_handler',

@@ -14,6 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
 
 from authors.apps.authentication.serializers import (UserSerializer)
+from .serializers import NotificationSerializer
 
 
 class NotificationAPIView(generics.ListAPIView):
@@ -24,13 +25,13 @@ class NotificationAPIView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, format=None):
         notifications = UserNotifications.objects.all()
-        content = {'Notifications': notifications}
-        return Response(content)
+        serializer = NotificationSerializer(notifications, many=True, read_only=True)
+        return Response({"notifications": serializer.data})
 
 
 class SubscribeAPIView(generics.ListAPIView):
     """
-    A view for subcribing for notifications
+    A view for subscribing for notifications
     """
 
     renderer_classes = (JSONRenderer, )

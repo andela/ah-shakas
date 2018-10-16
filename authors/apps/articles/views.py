@@ -18,6 +18,7 @@ from django.dispatch import receiver
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
+from django.conf import settings
 
 from .models import ArticlesModel, Comment, Rating, Favourite, Tags, LikesDislikes, CommentHistory, CommentLike, ArticleStat, ReportArticles
 from .serializers import (ArticlesSerializers,
@@ -38,6 +39,8 @@ from .serializers import ArticlesSerializers
 from .renderers import ArticlesRenderer
 from authors.apps.notifications.models import UserNotifications
 from .filters import ArticlesFilter
+from authors.apps.profiles.models import Profile
+from authors.apps.authentication.models import User
 
 
 class StandardPagination(PageNumberPagination):
@@ -86,6 +89,25 @@ def notification(sender, instance=None, created=None, **kwargs):
     """
     if created == True:
         username = instance.author.username
+        author = instance.author
+        title = instance.title
+        # domain for the application
+        current_domain = settings.DEFAULT_DOMAIN
+
+        # create a link for to the article
+        url = (current_domain + "/api/articles/" + str(instance.slug))
+        # get the followers
+        profile = author.profile
+        followers = profile.is_following.all()
+        # send notification
+        for follower in followers:
+            subscription = User.objects.get(username=follower).is_subcribed
+            if subscription == False:
+                follower_email = User.objects.get(username=follower)
+                email = str(follower_email)
+                notification = (username + " created a new article about " + title)
+                UserNotifications.objects.get_or_create(article = instance,
+                    notification = notification, author_id=instance.author.id, recipient_id=email, article_link=url)
         # print(instance.author.username)
         username = instance.author.username
         title = instance
