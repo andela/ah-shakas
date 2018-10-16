@@ -15,6 +15,7 @@ class TestProfileListApi(APITestCase):
         """
         self.url = reverse('profiles:view_all')
         register_url = reverse('authentication:user-registration')
+        login_url = reverse('authentication:user_login')
         def create_user(username, email, password):
             user =  {
                     'user' : {
@@ -24,19 +25,22 @@ class TestProfileListApi(APITestCase):
                     }
                 }
             self.client.post(register_url,user, format="json")
-            User.is_active = True
+            user = User.objects.get(email=email)
+            user.is_active = True
+            user.save()
+
+        create_user('username', 'email@email.com', 'password123')
+        create_user('kevin', 'koech@gmail.com', 'Kev12345')
+        create_user('kibitok', 'koechkevin@gmail.com', 'Kev12345')
+        create_user('koech', 'koechkevin92@gmail.com', 'Kev12345')
         user =  {
                     'user' : {
-                        'username': 'username',
                         'email': 'email@email.com',
                         'password': 'password123'
                     }
                 }
-        response = self.client.post(register_url,user, format="json")
+        response = self.client.post(login_url,user, format="json")
         self.token = json.loads(response.content)['user']['token']
-        create_user('kevin', 'koech@gmail.com', 'Kev12345')
-        create_user('kibitok', 'koechkevin@gmail.com', 'Kev12345')
-        create_user('koech', 'koechkevin92@gmail.com', 'Kev12345')
 
     def test_user_can_view_profiles(self):
         """a user cannot see owns profile on the list"""
