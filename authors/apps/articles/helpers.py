@@ -1,7 +1,9 @@
 import re
 from math import ceil
 
-def get_time_to_read_article(article, words_per_minute=250):
+from authors.settings import WPM
+
+def get_time_to_read_article(article, words_per_minute=WPM):
     '''
     This function returns the time it takes to read an article
     '''
