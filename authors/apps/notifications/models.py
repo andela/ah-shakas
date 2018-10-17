@@ -16,8 +16,7 @@ class UserNotifications(models.Model):
     article_link = models.URLField(
         ("Article Link"), 
         max_length=128, 
-        db_index=True, 
-        unique=True,
+        db_index=True,
         blank=True
     )
     read_status = models.BooleanField(default=False)

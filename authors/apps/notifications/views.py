@@ -46,8 +46,6 @@ class SubscribeAPIView(generics.ListAPIView):
             user.is_subcribed = True
             user.save()
             return Response({"Message":"You have successfully subscribed to notifications"}, status=status.HTTP_200_OK)
-            serializer = self.serializer_class(request.user)
-            return Response(serializer.data)
 
 class UnSubscribeAPIView(generics.ListAPIView):
     """
@@ -66,5 +64,3 @@ class UnSubscribeAPIView(generics.ListAPIView):
             user.is_subcribed = False
             user.save()
             return Response({"Message": "You have successfully unsubscribed to notifications"})
-            serializer = self.serializer_class(request.user)
-            return Response(serializer.data)
