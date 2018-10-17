@@ -8,11 +8,9 @@ from authors.apps.articles.helpers import get_time_to_read_article
 from authors.apps.profiles.models import Profile
 from authors.apps.profiles.serializers import ProfileSerializer
 
-<<<<<<< HEAD
-=======
 from .models import ArticlesModel, Rating, Comment
 
->>>>>>> [Feature #160577480] Add ratings to article views
+
 class ArticlesSerializers(serializers.ModelSerializer):
     title = serializers.CharField(
         required=True,
@@ -48,16 +46,6 @@ class ArticlesSerializers(serializers.ModelSerializer):
         serializer = ProfileSerializer(instance=Profile.objects.get(user=obj.author))
         return serializer.data
 
-<<<<<<< HEAD
-    def to_representation(self,instance):
-       """
-       overide representatiom for custom output
-       """
-       representation = super(ArticlesSerializers, self).to_representation(instance)
-       representation['time_to_read'] = get_time_to_read_article(instance)
-       return representation
-    
-=======
     def get_rating(self, obj):
         """This method gets and returns the rating for the article"""
 
@@ -82,7 +70,14 @@ class ArticlesSerializers(serializers.ModelSerializer):
             'avg_rating': avg_rating['rating__avg']
         }
 
->>>>>>> [Feature #160577480] Add ratings to article views
+    def to_representation(self,instance):
+       """
+       overide representatiom for custom output
+       """
+       representation = super(ArticlesSerializers, self).to_representation(instance)
+       representation['time_to_read'] = get_time_to_read_article(instance)
+       return representation
+    
     class Meta:
         model = ArticlesModel
         fields = (
