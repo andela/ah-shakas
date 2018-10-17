@@ -33,6 +33,9 @@ from .serializers import (ArticlesSerializers,
                           ArticleStatSerializer)
 from authors import settings
 from .renderers import ArticlesRenderer, RatingJSONRenderer, FavouriteJSONRenderer
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+
 from .permissions import IsOwnerOrReadonly
 from .models import ArticlesModel
 from .serializers import ArticlesSerializers
@@ -101,23 +104,31 @@ def notification(sender, instance=None, created=None, **kwargs):
         # get the followers
         profile = author.profile
         followers = profile.is_following.all()
+
         # send notification
         for follower in followers:
             subscription = User.objects.get(username=follower).is_subcribed
-            if subscription == False:
+            if subscription == True:
                 follower_email = User.objects.get(username=follower)
                 email = str(follower_email)
                 notification = (username + " created a new article about " + title)
-                UserNotifications.objects.get_or_create(article=instance,
-                                                        notification=notification, author_id=instance.author.id,
-                                                        recipient_id=email, article_link=url)
-        # print(instance.author.username)
-        username = instance.author.username
-        title = instance
-        print(title)
-        notification = username + " created a new article"
-        UserNotifications.objects.get_or_create(article=instance, notification=notification,
-                                                author_id=instance.author.id, recipient_id=2)
+                UserNotifications.objects.create(article=instance,
+                    notification = notification, author_id=instance.author.id, recipient_id=email, article_link=url)
+                name = User.objects.get(username=follower).username
+                # send email notification
+                body = render_to_string('notification.html', {
+                    'url': url,
+                    'notification': notification,
+                    'name': name
+                })
+                send_mail(
+                    'You have a new notification',
+                    'You have a new notification from authors haven',
+                    'authors-haven@authors-heaven.com',
+                    [email],
+                    html_message=body,
+                    fail_silently=False,
+                )
 
 
 class ArticlesDetails(RetrieveUpdateDestroyAPIView):
@@ -336,7 +347,6 @@ class CommentsListCreateView(ListCreateAPIView):
                         if favourite.article_id == instance.article.id:
                             # fetch the user to notify
                             recipient_email = User.objects.get(id=favourite.user_id)
-
                             email = str(recipient_email)
                             author_id = instance.author.id
 
@@ -344,6 +354,22 @@ class CommentsListCreateView(ListCreateAPIView):
                             UserNotifications.objects.create(article=instance.article,
                                                              notification=notification, author_id=author_id,
                                                              recipient_id=email, article_link=url)
+
+                            name = User.objects.get(email=email).username
+                            # send email notification
+                            body = render_to_string('notification.html', {
+                                'url': url,
+                                'notification': notification,
+                                'name': name
+                            })
+                            send_mail(
+                                'You have a new notification',
+                                'You have a new notification from authors haven',
+                                'authors-haven@authors-heaven.com',
+                                [email],
+                                html_message=body,
+                                fail_silently=False,
+                            )
 
     def get(self, request, slug):
         """
