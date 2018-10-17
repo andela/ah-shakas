@@ -4,6 +4,7 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 from authors.apps.authentication.models import UserManager
 from .models import Profile
+from authors.apps.authentication.token import generate_token
 
 
 class ProfileTest(APITestCase):
@@ -31,8 +32,21 @@ class ProfileTest(APITestCase):
         }
 
         self.url_register = reverse('authentication:user-registration')
+        self.login_url = reverse('authentication:user_login')
         self.client.post(self.url_register,self.user_2,format='json')
+
+    def activate_user(self):
+        """Activate user after login"""
+        self.client.post(self.url_register, self.user, format='json')
+        user = self.user['user']
+        token = generate_token(user['username'])
+        self.client.get(reverse("authentication:verify", args=[token]))
         
+    def login_user(self):
+        """This will login an existing user"""
+        response = self.client.post(self.login_url, self.user, format='json')
+        token = response.data['token']
+        return token
     
     def registration(self):
         response = self.client.post(self.url_register, self.user, format='json')
@@ -52,7 +66,8 @@ class ProfileTest(APITestCase):
         self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
 
     def test_get_following_with_auth(self):
-        token=self.registration()
+        self.activate_user()
+        token=self.login_user()
         data={}
         self.client.credentials(HTTP_AUTHORIZATION=token)
         url=reverse("profiles:following", kwargs={"username": self.user['user']['username']})
@@ -60,7 +75,8 @@ class ProfileTest(APITestCase):
         self.assertEqual(response.status_code,status.HTTP_200_OK)
 
     def test_get_followers_with_auth(self):
-        token=self.registration()
+        self.activate_user()
+        token=self.login_user()
         data={}
         self.client.credentials(HTTP_AUTHORIZATION=token)
         url=reverse("profiles:followers", kwargs={"username": self.user['user']['username']})
@@ -68,7 +84,8 @@ class ProfileTest(APITestCase):
         self.assertEqual(response.status_code,status.HTTP_200_OK)
 
     def test_follow_with_auth(self):
-        token=self.registration()
+        self.activate_user()
+        token=self.login_user()
         data={}
         self.client.credentials(HTTP_AUTHORIZATION=token)
         url=reverse("profiles:follow", kwargs={"username": self.user_2['user']['username']})
@@ -82,7 +99,8 @@ class ProfileTest(APITestCase):
         self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
 
     def test_unfollow_with_auth(self):
-        token=self.registration()
+        self.activate_user()
+        token=self.login_user()
         data={}
         self.client.credentials(HTTP_AUTHORIZATION=token)
         url=reverse("profiles:follow", kwargs={"username": self.user_2['user']['username']})
