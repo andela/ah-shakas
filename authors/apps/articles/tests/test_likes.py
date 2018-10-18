@@ -35,7 +35,6 @@ class LikesDislikesTests(BaseTest):
         
         self.author_token = self.create_and_login_user()
         self.article_slug = self.create_article(token=self.author_token)
-        # self.user_token = self.create_and_login_user(second_user)
 
         self.slug = self.create_article()
         self.article_url = api_reverse('articles:article-details', {self.slug: 'slug'})
@@ -43,7 +42,7 @@ class LikesDislikesTests(BaseTest):
 
     def create_like(self, like=None):
         if not like:
-            like=self.like
+            like = self.like
         response = self.client.post(
             self.like_url, 
             like, 
@@ -55,7 +54,7 @@ class LikesDislikesTests(BaseTest):
 
     def create_dislike(self, like=None):
         if not like:
-            like=self.dislike
+            like = self.dislike
         response = self.client.post(
             self.like_url, 
             like, 
