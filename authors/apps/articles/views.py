@@ -32,7 +32,6 @@ def get_article(slug):
     # queryset always has 1 thing as long as it is unique
     return article
 
-
 class ArticlesList(ListCreateAPIView):
     queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers
@@ -360,6 +359,7 @@ class FavouriteGenericAPIView(APIView):
         data = {"article":article_serializer.data}
         data["message"] = "unfavourited"
         return Response(data, status.HTTP_200_OK)
+
 
 class ArticlesLikesDislikes(GenericAPIView):
     """

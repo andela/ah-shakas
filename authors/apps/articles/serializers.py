@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from django.db.models import Avg
 from django.core.validators import MinValueValidator, MaxValueValidator
-from rest_framework.validators import UniqueTogetherValidator
 
 from authors import settings
 from authors.apps.articles.helpers import get_time_to_read_article
