@@ -362,6 +362,10 @@ class FavouriteGenericAPIView(APIView):
         return Response(data, status.HTTP_200_OK)
 
 class ArticlesLikesDislikes(GenericAPIView):
+    """
+    Class for creating and deleting article likes/dislikes
+    """
+    
     queryset = LikesDislikes.objects.all()
     serializer_class = LikesDislikesSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
