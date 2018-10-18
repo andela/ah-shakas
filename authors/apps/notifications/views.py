@@ -1,17 +1,13 @@
 #  authors/apps/notifications
 # Contains the views for the notifications
 
-import jwt
-from django.conf import settings
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from django.core import serializers
 from rest_framework.renderers import JSONRenderer
 from authors.apps.notifications.models import UserNotifications
 from authors.apps.authentication.models import User
 from rest_framework.permissions import IsAuthenticated
-from django.http import JsonResponse
 
 from authors.apps.authentication.serializers import (UserSerializer)
 from .serializers import NotificationSerializer
@@ -48,6 +44,7 @@ class SubscribeAPIView(generics.ListAPIView):
             return Response({"Message":"You have successfully subscribed to notifications"}, status=status.HTTP_200_OK)
 
 class UnSubscribeAPIView(generics.ListAPIView):
+
     """
     A view for Unsubcribing for notifications
     """
