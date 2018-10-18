@@ -1,9 +1,7 @@
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.reverse import reverse as API_Reverse
-from django.core import mail
 from django.urls import reverse
 
-from authors.apps.authentication.models import User
 from authors.apps.authentication.token import generate_token
 
 

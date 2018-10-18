@@ -1,8 +1,7 @@
-from rest_framework.reverse import reverse as API_Reverse
 from rest_framework import status
 import json
 
-from authors.apps.articles.tests.base_tests import BaseTest
+from authors.apps.articles.tests.base_tests import BaseTest, API_Reverse
 
 
 class TagsTest(BaseTest):
