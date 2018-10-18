@@ -7,16 +7,12 @@ from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework import status
-from django.http import Http404
 
 from authors.apps.authentication.models import User
 from .models import Profile
 from .renderers import ProfileJSONRenderer, ProfilesJSONRenderer
 from .serializers import ProfileSerializer, ProfileListSerializer
 from authors.apps.authentication.serializers import UserSerializer
-
-
-# Create your views here.
 
 def current_profile(request):
     authenticated_user=request.user
@@ -130,7 +126,6 @@ class Following(generics.RetrieveAPIView):
         serializer = self.serializer_class(following, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class FollowedBy(generics.RetrieveAPIView):
     """
     Get all the users who follow a user
@@ -149,7 +144,6 @@ class FollowedBy(generics.RetrieveAPIView):
         serializer = self.serializer_class(follower, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
 class ProfileListAPIView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     renderer_classes = (ProfilesJSONRenderer,)
@@ -161,11 +155,12 @@ class ProfileListAPIView(ListAPIView):
         try:
             queryset = Profile.objects.all().exclude(user=request.user)
         except Profile.DoesNotExist:
-            return Response(
+            message = Response(
                     {
                         'message': 'Profile not found'
                     },
                     status=status.HTTP_404_NOT_FOUND
                 )
         serializer = ProfileListSerializer(queryset, many=True)
-        return Response({'profiles': serializer.data}, status=status.HTTP_200_OK)
+        message = Response({'profiles': serializer.data}, status=status.HTTP_200_OK)
+        return message
