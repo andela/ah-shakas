@@ -48,7 +48,7 @@ class ProfileListSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     bio = serializers.CharField()
     image = serializers.ImageField(default=None)
-    following = serializers.BooleanField()
+    isfollowing = serializers.BooleanField()
     class Meta:
         model = Profile
         fields = ['username', 'bio', 'image','isfollowing']
