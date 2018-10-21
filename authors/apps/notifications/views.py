@@ -43,8 +43,8 @@ class SubscribeAPIView(generics.ListAPIView):
             user.save()
             return Response({"Message":"You have successfully subscribed to notifications"}, status=status.HTTP_200_OK)
 
-class UnSubscribeAPIView(generics.ListAPIView):
 
+class UnSubscribeAPIView(generics.ListAPIView):
     """
     A view for Unsubcribing for notifications
     """
@@ -56,7 +56,7 @@ class UnSubscribeAPIView(generics.ListAPIView):
         email = request.user
         user = User.objects.get(email=email)
         if user.is_subcribed == False:
-            return Response({"Message": "You are not subscribed to notifications"})
+            return Response({"Message": "You are not subscribed to notifications"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             user.is_subcribed = False
             user.save()
