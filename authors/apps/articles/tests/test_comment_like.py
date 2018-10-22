@@ -70,7 +70,7 @@ class LikesDislikesTests(BaseTest):
         """
         Test liking an article that does not exist
         """
-        response = self.client.post('/api/articles/slug/like/',
+        response = self.client.post('/api/articles/slug/comment/id/like',
             self.like,
             HTTP_AUTHORIZATION=self.create_and_login_user(self.second_user),
             format='json')
