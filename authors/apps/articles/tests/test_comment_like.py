@@ -14,7 +14,7 @@ class LikesDislikesTests(BaseTest):
 
     def setUp(self):
         """
-        Setup the user, rating and article for the tests
+        Setup the user, rating and comment for the tests
         """
         super().setUp()
         self.like =  {
@@ -31,11 +31,11 @@ class LikesDislikesTests(BaseTest):
         }
         
         self.author_token = self.create_and_login_user()
-        # self.article_slug = self.create_article(token=self.author_token)
-        self.slug = self.create_article()
+        # self.comment_slug = self.create_comment(token=self.author_token)
+        self.slug = self.create_comment()
         self.id = self.create_comment()
 
-        self.article_url = api_reverse('articles:comment-details', {self.slug:'slug' ,self.id: 'id'})
+        self.comment_url = api_reverse('articles:comment-details', {self.slug:'slug' ,self.id: 'id'})
         self.like_url = api_reverse('articles:comment-like', {self.slug:'slug' ,self.id: 'id'})
 
     def create_like(self, like=None):
@@ -51,9 +51,9 @@ class LikesDislikesTests(BaseTest):
         return response
 
 
-    def test_user_cant_like_own_article(self):
+    def test_user_cant_like_own_comment(self):
         """
-        Test a user liking their own article
+        Test a user liking their own comment
         """
         response = self.client.post(self.like_url, self.like, format='json', HTTP_AUTHORIZATION=self.author_token)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -66,19 +66,19 @@ class LikesDislikesTests(BaseTest):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
-    def test_article_does_not_exist(self):
+    def test_comment_does_not_exist(self):
         """
-        Test liking an article that does not exist
+        Test liking an comment that does not exist
         """
-        response = self.client.post('/api/articles/slug/comment/id/like',
+        response = self.client.post('/api/article/slug/comment/id/like',
             self.like,
             HTTP_AUTHORIZATION=self.create_and_login_user(self.second_user),
             format='json')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_user_cant_like_article_twice(self):
+    def test_user_cant_like_comment_twice(self):
         """
-        Test a user cant like an article twice
+        Test a user cant like an comment twice
         """
         self.create_like()
         response = self.create_like()
@@ -94,9 +94,9 @@ class LikesDislikesTests(BaseTest):
             format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST) 
 
-    def test_unauthenticated_user_cannot_like_article(self):
+    def test_unauthenticated_user_cannot_like_comment(self):
         """
-        Test unauthenticated user cannot like an article
+        Test unauthenticated user cannot like an comment
         """
         self.client.credentials(HTTP_AUTHORIZATION='')
         response = self.client.post(self.like_url,
@@ -128,3 +128,13 @@ class LikesDislikesTests(BaseTest):
         self.client.post(self.like_url, self.like, format='json', HTTP_AUTHORIZATION=self.author_token)
         response = self.client.delete(self.like_url, format='json')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_article_likes_count(self):
+        """
+        Test article likes count
+        """
+        response = self.client.get(self.comment_url, format='json')
+        comment_like_count = response.data['comment_like_count']
+        old_count = 1
+        self.create_like()
+        self.assertNotEqual(comment_like_count, old_count)
