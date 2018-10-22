@@ -5,6 +5,7 @@
             "sha256": "b71e8144e21967f3420c9d51a0c468dce3343b848eaaad32e3f74a5f4db8ed8a"
             "sha256": "976688d0ace5b6a6f8f34c5679b396b8022799a8ebf0258968ecbc817bd11742"
             "sha256": "357623c4eaeaf144814b2ad79562a2ffe909cc0456b4d16d662df544b7fdeb64"
+            "sha256": "976688d0ace5b6a6f8f34c5679b396b8022799a8ebf0258968ecbc817bd11742"
         },
         "pipfile-spec": 6,
         "requires": {

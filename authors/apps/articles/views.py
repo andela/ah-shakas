@@ -284,12 +284,16 @@ class RatingDetails(GenericAPIView):
         """
         Deletes a rating
         """
-        article = ArticlesModel.objects.filter(slug=slug).first()
-        if not article:
-            message = {'message': 'Article slug is not valid.'}
-            return message
-        # queryset always has 1 thing as long as it is unique
-        return article
+        article = get_article(slug)
+        if isinstance(article, dict):
+            raise ValidationError(detail={'artcle': 'No article found for the slug given'})
+
+        rating = self.get_rating(user=request.user, article=article)
+        rating.delete()
+        return Response(
+            {'message': 'Successfully deleted rating'},
+            status=status.HTTP_200_OK
+        )
 
 
 class CommentsListCreateView(ListCreateAPIView):
