@@ -18,6 +18,7 @@ from .serializers import (ArticlesSerializers,
                           FavouriteSerializer,
                           TagSerializers,
                           LikesDislikesSerializer,
+                          CommentsLikeSerializer
                           CommentHistorySerializer)
 from authors import settings
 from .renderers import ArticlesRenderer, RatingJSONRenderer, FavouriteJSONRenderer
