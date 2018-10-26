@@ -32,8 +32,8 @@ class LikesDislikesTests(BaseTest):
         
         self.author_token = self.create_and_login_user()
         # self.comment_slug = self.create_comment(token=self.author_token)
-        self.slug = self.create_comment()
-        self.id = self.create_comment()
+        self.slug = self.create_comment_like()
+        self.id = self.create_comment_like()
 
         self.comment_url = api_reverse('articles:comment-details', {self.slug:'slug' ,self.id: 'id'})
         self.like_url = api_reverse('articles:comment-like', {self.slug:'slug' ,self.id: 'id'})
