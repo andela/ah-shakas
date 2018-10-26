@@ -115,9 +115,9 @@ class VerifyAPIView(APIView):
     """
     permission_classes = (AllowAny,)
     def get(self, request, token):
-        username = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
-        user_in_db = User.objects.get(username = username['username'])
         try:
+            username = jwt.decode(token, settings.SECRET_KEY, algorithms='HS256')
+            user_in_db = User.objects.get(username=username['username'])
             user_in_db.is_active = True
             user_in_db.save()
             return Response(data = {"Message": "Congratulations! You have successfully activated your account."}, 
