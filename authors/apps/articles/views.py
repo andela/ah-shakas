@@ -130,7 +130,8 @@ def notification(sender, instance=None, created=None, **kwargs):
                     fail_silently=False,
                 )
 
-
+class ArticlesDetails(RetrieveUpdateDestroyAPIView):
+    queryset = ArticlesModel.objects.all()
     serializer_class = ArticlesSerializers
     renderer_classes = (ArticlesRenderer,)
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadonly)
