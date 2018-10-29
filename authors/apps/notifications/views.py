@@ -37,11 +37,11 @@ class SubscribeAPIView(generics.ListAPIView):
         email = request.user
         user = User.objects.get(email=email)
         if user.is_subcribed == True:
-            return Response({"Message":"You are already subscribed to notifications"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"Message": "You are already subscribed to notifications"}, status=status.HTTP_400_BAD_REQUEST)
         else:
             user.is_subcribed = True
             user.save()
-            return Response({"Message":"You have successfully subscribed to notifications"}, status=status.HTTP_200_OK)
+            return Response({"Message": "You have successfully subscribed to notifications"}, status=status.HTTP_200_OK)
 
 
 class UnSubscribeAPIView(generics.ListAPIView):
