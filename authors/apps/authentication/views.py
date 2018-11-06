@@ -260,8 +260,9 @@ class SocialSignUp(CreateAPIView):
             user_data = serializer.data
             user_in_db = User.objects.get(username=user_data['username'])
             user_in_db.is_active = True
+            user_data["token"] = user_in_db.token
             user_in_db.save()
-            user_data["token"] = generate_token(user_data["email"])
+
             headers = self.get_success_headers(serializer.data)
             return Response(user_data, status=status.HTTP_201_CREATED, 
                             headers=headers)
