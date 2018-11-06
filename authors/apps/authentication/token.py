@@ -5,14 +5,14 @@ from datetime import datetime, timedelta
 import jwt
 from django.conf import settings
 
-def generate_token(username):
+def generate_token(email):
         """
         This method generates and return it as a string.
         """
         date = datetime.now() + timedelta(hours=24)
 
         payload = {
-            'username': username,
+            'email': email,
             'exp': int(date.strftime('%s'))
         }
 
