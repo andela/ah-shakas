@@ -249,13 +249,10 @@ class SocialSignUp(CreateAPIView):
             # from the request
             auth_created = user.social_auth.get(provider=provider)
             if not auth_created.extra_data['access_token']:
-                    auth_created.extra_data['access_token'] = token
-                    auth_created.save()
-                    serializer.save()
-                
-                # user_to_activate = User.objects.get(username=user.username)
-            
-            
+                auth_created.extra_data['access_token'] = token
+                auth_created.save()
+                serializer.save()
+        
             serializer = UserSerializer(user)
             user_data = serializer.data
             user_in_db = User.objects.get(username=user_data['username'])
